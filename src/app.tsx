@@ -1,7 +1,8 @@
 import Taro, { Component, Config } from '@tarojs/taro'
 import { Provider } from '@tarojs/redux'
 
-import Index from './pages/index'
+import AppContainer from './pages/app'
+
 
 import configStore from './store'
 import 'taro-ui/dist/style/index.scss'
@@ -30,9 +31,9 @@ class App extends Component {
     ],
     window: {
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
+      navigationBarBackgroundColor: '#d43c33',      
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
+      navigationBarTextStyle: 'white'
     }
   }
 
@@ -49,7 +50,7 @@ class App extends Component {
   render () {
     return (
       <Provider store={store}>
-        <Index />
+        <AppContainer />
       </Provider>
     )
   }
