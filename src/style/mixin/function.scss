@@ -1,4 +1,4 @@
-@import "config";
+@import "./config.scss";
 
 /* BEM support Func
  -------------------------- */
@@ -39,6 +39,5 @@
 }
 
 @function hitAllSpecialNestRule($selector) {
-
   @return containsModifier($selector) or containWhenFlag($selector) or containPseudoClass($selector);
 }

@@ -37,7 +37,7 @@ const config = {
   },
   sass: {
     resource: resolve('src/style/common.scss'),
-    resource: resolve('src/style/mixin/mixin.scss'),
+    resource: resolve('src/style/mixin/mixins.scss'),
   },
   alias: {
     '@': resolve('src')

@@ -116,14 +116,14 @@ class Index extends Component {
     const { showLoading, bannerList, searchValue } = this.state
 
     return (
-      <View className='section_index'>
+      <View className='yl-index'>
         <AtSearchBar value={searchValue} onChange={this.changeVal} onConfirm={this.handleTopSearch} />
-        <View className="section_index_content">
-          <Swiper className='banner' indicatorColor='#999' indicatorActiveColor='#333' circular indicatorDots autoplay>
+        <View className="yl-index__content">
+          <Swiper className='yl-index__banner' indicatorColor='#999' indicatorActiveColor='#333' circular indicatorDots autoplay>
             {
               bannerList.map((item) =>
-                <SwiperItem key={item.targetId} className='banner_list__item'>
-                  <Image src={item.pic} className='banner_list__item__img' />
+                <SwiperItem key={item.targetId} className='yl-index__banner__item'>
+                  <Image src={item.pic} className='yl-index__banner__item__img' />
                 </SwiperItem>
               )
             }
