@@ -3,7 +3,7 @@
     padding: 10rpx 20rpx;
   }
   @include e(banner){
-    &_list__item {
+    &__item {
       &__img {
         width: 100%;
         height: 100%;
