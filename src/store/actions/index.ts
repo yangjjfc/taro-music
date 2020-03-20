@@ -1,10 +1,6 @@
-import * as user from './user';
-import * as permission from './permission';
-import * as app from './app';
+import  song from './song';
 
 
 export default  {
-    ...user,
-    ...permission,
-    ...app
+    song
 };

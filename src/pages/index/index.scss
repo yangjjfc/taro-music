@@ -11,4 +11,19 @@
       }
     }
   }
+
+  @include e(tab){
+    height: 200rpx;
+    width: 100%;
+    @include flex(flex-start);
+    &__list{
+      @include flex;
+      @include flex-wrap;
+      &__text{
+        margin-top: 10rpx;
+        font-size: 25rpx;
+      }
+    }
+    
+  }
 }

@@ -1,11 +1,20 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Image, Text, Swiper, SwiperItem, Input } from '@tarojs/components'
-import { AtSearchBar } from 'taro-ui'
+import { AtSearchBar, AtAvatar } from 'taro-ui'
 import { connect } from '@tarojs/redux'
 import http from "@/utils/axios/index";
+import CLoading from '@/components/CLoading';
+import { songType } from '@/store/constants/commonType'
+import {
+  getRecommendPlayList,
+  getRecommendDj,
+  getRecommendNewSong,
+  getRecommend,
+  getSongInfo,
+  updatePlayStatus
+} from '@/store/actions/song'
 
-import { add, minus, asyncAdd } from '../../actions/counter'
 
 import './index.scss'
 
@@ -20,20 +29,45 @@ import './index.scss'
 // #endregion
 
 type PageStateProps = {
+  song: songType,
   counter: {
     num: number
-  }
+  },
+  recommendPlayList: Array<{
+    id: number,
+    name: string,
+    picUrl: string,
+    playCount: number
+  }>,
+  recommendDj: Array<{
+    name: string,
+    picUrl: string
+  }>,
+  recommendNewSong: any,
+  recommend: any
 }
 
 type PageDispatchProps = {
-  add: () => void
-  dec: () => void
-  asyncAdd: () => any
+  getRecommendPlayList: () => any,
+  getRecommendDj: () => any,
+  getRecommendNewSong: () => any,
+  getRecommend: () => any,
+  getSongInfo: (object) => any,
+  updatePlayStatus: (object) => any
 }
 
 type PageOwnProps = {}
 
-type PageState = {}
+type PageState = {
+  current: number,
+  showLoading: boolean,
+  bannerList: Array<{
+    typeTitle: string,
+    pic: string,
+    targetId: number
+  }>,
+  searchValue: string
+}
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 
@@ -42,20 +76,60 @@ interface Index {
   state: any;
 }
 
-@connect(({ counter }) => ({
-  counter
+@connect(({ song }) => ({
+  song: song,
+  recommendPlayList: song.recommendPlayList,
+  recommendDj: song.recommendDj,
+  recommendNewSong: song.recommendNewSong,
+  recommend: song.recommend
 }), (dispatch) => ({
-  add() {
-    dispatch(add())
+  getRecommendPlayList() {
+    dispatch(getRecommendPlayList())
   },
-  dec() {
-    dispatch(minus())
+  getRecommendDj() {
+    dispatch(getRecommendDj())
   },
-  asyncAdd() {
-    dispatch(asyncAdd())
+  getRecommendNewSong() {
+    dispatch(getRecommendNewSong())
+  },
+  getRecommend() {
+    dispatch(getRecommend())
+  },
+  getSongInfo(object) {
+    dispatch(getSongInfo(object))
+  },
+  updatePlayStatus(object) {
+    dispatch(updatePlayStatus(object))
   }
 }))
 class Index extends Component {
+  public tabs: any[] = [
+    {
+      imgurl: 'http://idlefish-autoui.oss-cn-hangzhou.aliyuncs.com/aliyun_k8s%2Fai_image%2F42d419f31bbbb2e13392aad0a81d97e3.png',
+      name: '每日推荐',
+      type: 'day'
+    },
+    {
+      imgurl: 'http://idlefish-autoui.oss-cn-hangzhou.aliyuncs.com/aliyun_k8s%2Fai_image%2F0fbd7a5dc24e8b32f9a8e01e95f6b3d1.png',
+      name: '歌单',
+      type: 'song'
+    },
+    {
+      imgurl: 'http://idlefish-autoui.oss-cn-hangzhou.aliyuncs.com/aliyun_k8s%2Fai_image%2F08924de0749985d9cbbf0769e1c67685.png',
+      name: '排行榜',
+      type: 'ranking'
+    },
+    {
+      imgurl: 'http://idlefish-autoui.oss-cn-hangzhou.aliyuncs.com/aliyun_k8s%2Fai_image%2Ff999014a7aa55df0604d8e3b9faf052a.png',
+      name: '电台',
+      type: 'broadcasting'
+    },
+    {
+      imgurl: 'http://idlefish-autoui.oss-cn-hangzhou.aliyuncs.com/aliyun_k8s%2Fai_image%2Fbac8c9b63ed6b6f2c3df6fe5e6de5cab.png',
+      name: '直播',
+      type: 'live'
+    }
+  ]
 
   /**
  * 指定config的类型声明为: Taro.Config
@@ -71,14 +145,32 @@ class Index extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      showLoading: true,
       searchValue: ''
     }
   }
 
-  //搜索
-  handleTopSearch = (value) => {
-    console.log("Index -> handleTopSearch -> this.state.searchValue", this.state.searchValue)
+
+  componentWillMount() {
+    this.initData();
+    this.getBanner();
   }
+  componentDidMount() {
+    this.removeLoading();
+  }
+  componentWillReceiveProps(nextProps) {
+    console.log(this.props, nextProps)
+    this.setState({
+      showLoading: false
+    })
+  }
+
+  componentWillUnmount() {
+  }
+
+  componentDidShow() { }
+
+  componentDidHide() { }
   //修改input val
   changeVal = (value) => {
     this.setState({
@@ -98,26 +190,34 @@ class Index extends Component {
       }
     })
   }
-  componentWillMount() {
-    this.getBanner();
+
+  initData() {
+    //获取推荐歌单
+    this.props.getRecommendPlayList();
+    //获取推荐新音乐
+    this.props.getRecommendNewSong();
+    //获取推荐电台
+    this.props.getRecommendDj();
+    //获取推荐节目
+    this.props.getRecommend();
   }
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps)
+
+  //去除loading
+  removeLoading() {
+    const { recommendPlayList, recommendDj } = this.props
+    if (recommendPlayList.length || recommendDj.length) {
+      this.setState({
+        showLoading: false
+      })
+    }
   }
-
-  componentWillUnmount() {
-  }
-
-  componentDidShow() { }
-
-  componentDidHide() { }
-
   render() {
     const { showLoading, bannerList, searchValue } = this.state
 
     return (
       <View className='yl-index'>
-        <AtSearchBar value={searchValue} onChange={this.changeVal} onConfirm={this.handleTopSearch} />
+        <CLoading fullPage={true} hide={!showLoading} />
+        <AtSearchBar value={searchValue} onChange={this.changeVal} />
         <View className="yl-index__content">
           <Swiper className='yl-index__banner' indicatorColor='#999' indicatorActiveColor='#333' circular indicatorDots autoplay>
             {
@@ -128,6 +228,19 @@ class Index extends Component {
               )
             }
           </Swiper>
+
+          <View className='yl-index__tab'>
+            {
+              this.tabs.map((item) =>
+                <View className='yl-index__tab__list' key={item.type}>
+                  <View className='yl-index__tab__list__icon-wrap'>
+                    <AtAvatar image={item.imgurl} circle></AtAvatar>
+                  </View>
+                  <Text className='yl-index__tab__list__text'>{item.name}</Text>
+                </View>
+              )
+            }
+          </View>
         </View>
       </View>
     )

@@ -21,7 +21,7 @@
     align-items: $align;
 }
 
-@mixin flex-wrap($direction:row, $wrap:wrap) {
+@mixin flex-wrap($direction:column, $wrap:wrap) {
     flex-direction: row;
     flex-wrap: wrap;
 }

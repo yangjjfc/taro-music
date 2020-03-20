@@ -1,13 +1,8 @@
 import { combineReducers } from 'redux';
-import {default as user }  from '../actions/user';
-import {default as permission } from '../actions/permission';
-import {default as app } from '../actions/app';
-
+import song from './song'
 
 const rootReducer = combineReducers({
-    user,
-    permission,
-    app
+    song
 });
 
 export default rootReducer;
