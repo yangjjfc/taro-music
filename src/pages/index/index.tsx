@@ -1,7 +1,9 @@
 import { ComponentClass } from 'react'
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Button, Text } from '@tarojs/components'
+import { View, Image, Text, Swiper, SwiperItem, Input } from '@tarojs/components'
+import { AtSearchBar } from 'taro-ui'
 import { connect } from '@tarojs/redux'
+import http from "@/utils/axios/index";
 
 import { add, minus, asyncAdd } from '../../actions/counter'
 
@@ -37,52 +39,96 @@ type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 
 interface Index {
   props: IProps;
+  state: any;
 }
 
 @connect(({ counter }) => ({
   counter
 }), (dispatch) => ({
-  add () {
+  add() {
     dispatch(add())
   },
-  dec () {
+  dec() {
     dispatch(minus())
   },
-  asyncAdd () {
+  asyncAdd() {
     dispatch(asyncAdd())
   }
 }))
 class Index extends Component {
 
-    /**
-   * 指定config的类型声明为: Taro.Config
-   *
-   * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
-   * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
-   * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
-   */
-    config: Config = {
+  /**
+ * 指定config的类型声明为: Taro.Config
+ *
+ * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
+ * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
+ * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
+ */
+  config: Config = {
     navigationBarTitleText: '首页'
   }
 
-  componentWillReceiveProps (nextProps) {
+  constructor(props) {
+    super(props)
+    this.state = {
+      searchValue: ''
+    }
+  }
+
+  //搜索
+  handleTopSearch = (value) => {
+    console.log("Index -> handleTopSearch -> this.state.searchValue", this.state.searchValue)
+  }
+  //修改input val
+  changeVal = (value) => {
+    this.setState({
+      bannerList: [],
+      searchValue: value
+    })
+  }
+  //获取banner
+  getBanner = () => {
+    http('/banner', {
+      type: 2
+    }).then(res => {
+      if (res.banners) {
+        this.setState({
+          bannerList: res.banners
+        })
+      }
+    })
+  }
+  componentWillMount() {
+    this.getBanner();
+  }
+  componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps)
   }
 
-  componentWillUnmount () { }
+  componentWillUnmount() {
+  }
 
-  componentDidShow () { }
+  componentDidShow() { }
 
-  componentDidHide () { }
+  componentDidHide() { }
 
-  render () {
+  render() {
+    const { showLoading, bannerList, searchValue } = this.state
+
     return (
-      <View className='index'>
-        <Button className='add_btn' onClick={this.props.add}>+</Button>
-        <Button className='dec_btn' onClick={this.props.dec}>-</Button>
-        <Button className='dec_btn' onClick={this.props.asyncAdd}>async</Button>
-        <View><Text>{this.props.counter.num}</Text></View>
-        <View><Text>Hello, World</Text></View>
+      <View className='section_index'>
+        <AtSearchBar value={searchValue} onChange={this.changeVal} onConfirm={this.handleTopSearch} />
+        <View className="section_index_content">
+          <Swiper className='banner' indicatorColor='#999' indicatorActiveColor='#333' circular indicatorDots autoplay>
+            {
+              bannerList.map((item) =>
+                <SwiperItem key={item.targetId} className='banner_list__item'>
+                  <Image src={item.pic} className='banner_list__item__img' />
+                </SwiperItem>
+              )
+            }
+          </Swiper>
+        </View>
       </View>
     )
   }

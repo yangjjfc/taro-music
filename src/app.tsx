@@ -1,12 +1,9 @@
 import Taro, { Component, Config } from '@tarojs/taro'
 import { Provider } from '@tarojs/redux'
-
-import AppContainer from './pages/app'
-
-
-import configStore from './store'
-import 'taro-ui/dist/style/index.scss'
-import './app.scss'
+import AppContainer from './pages/app' //临时容器
+import configStore from './store' 
+import './style/taro-ui.scss'
+import './style/basic.scss'
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：

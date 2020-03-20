@@ -26,7 +26,7 @@
  * }
  */
 const codeResponse = [{
-    code: ['SUCCESS', '0'],
+    code: ['SUCCESS', 200],
     success: true
 }, {
     code: ['SESSION_EXPIRED', '5000'], // 登陆过期

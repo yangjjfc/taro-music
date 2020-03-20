@@ -1,15 +1,14 @@
 /**
- * axios interceptor 拦截器配置
+ * fly interceptor 拦截器配置
  */
 import { showModal } from '../modal/index.js';
 import { Environment } from '@/utils/config/index';
-import codeResponse from './ruleCode';
 
 class Interceptor {
-    private axios:any;
-    private req:any;
-    constructor ({ TimeOut, axios }) {
-        this.axios = axios;
+    private fly: any;
+    private req: any;
+    constructor({ TimeOut, fly }) {
+        this.fly = fly;
         this.req = {
             timeout: TimeOut
         }; // 防止同个链接连续请求
@@ -17,7 +16,7 @@ class Interceptor {
         this.response();
     }
 
-    requestTimeout (name) {
+    requestTimeout(name) {
         setTimeout(() => {
             if (this.req[name]) {
                 delete this.req[name];
@@ -26,8 +25,8 @@ class Interceptor {
     }
 
     // 对请求数据做些什么
-    request () {
-        this.axios.interceptors.request.use((request) => {
+    request() {
+        this.fly.interceptors.request.use((request) => {
             request.urlGuid = request.url; // 防止同个链接连续请求
             // 本地
             if (~request.url.indexOf('.json')) {
@@ -35,7 +34,7 @@ class Interceptor {
                 request.url = '/data/' + request.url;
                 // 线上
             } else if (request.headers.ignoreRepeat || !this.req[request.urlGuid]) {
-                request.url = Environment.REQUEST_URL + '/gateway/' + request.url;
+                request.url = Environment.REQUEST_URL + request.url;
                 this.req[request.urlGuid] = true;
                 this.requestTimeout(request.urlGuid);
             } else if (this.req[request.urlGuid]) {
@@ -44,34 +43,20 @@ class Interceptor {
             return request;
         }, (error) => Promise.reject(error));
     }
-    
+
     // 对响应数据做点什么
-    response () {
-        this.axios.interceptors.response.use((response) => {
-            delete this.req[response.config.urlGuid]; // 防止同个链接连续请求
+    response() {
+        this.fly.interceptors.response.use((response) => {
+            delete this.req[response.request.urlGuid]; // 防止同个链接连续请求
             if (response.data) {
-                for (const item of codeResponse) {
-                    if (item.code.includes(response.data.code)) {
-                        if (item.success) {
-                            return response.data; 
-                        } else {
-                          if (item.show) {//eslint-disable-line
-                                showModal({ 
-                                    content: item.show.msg || `${response.data.message}`,
-                                    showCancel: false
-                                });
-                                item.show.clear && (sessionStorage.clear());
-                                item.show.href && (window.location.href = item.show.href);
-                            }
-                            return Promise.reject(response.data);
-                        }
-                    } 
+                if (response.data.code === 200) {
+                    return response.data;
                 }
-                showModal({ 
+                showModal({
                     content: `${response.data.message}`,
                     showCancel: false
                 });
-                return Promise.reject(this.formatResponseData(response));
+                return Promise.reject(response);
             }
             return response;
         }, (error) => {
@@ -79,8 +64,8 @@ class Interceptor {
         });
     }
 
-    formatResponseData (response) {
-        let responsex = {}, apiCode = response.config.url; 
+    formatResponseData(response) {
+        let responsex = {}, apiCode = response.config.url;
         if (response.config.url.includes('apiCode')) {
             apiCode = response.config.url.split('apiCode')[1];
             if (apiCode) {
