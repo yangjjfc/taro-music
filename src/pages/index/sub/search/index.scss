@@ -1,0 +1,80 @@
+@include b(search){
+  font-size: 29rpx;
+  height: 100%;
+  @include e(input){
+    margin-bottom: 10rpx;
+    height: 90rpx;
+  }
+  @include e(content){
+    padding: 0 20rpx;
+    box-sizing: border-box;
+    height:calc(100vh - 90rpx) ;
+  }
+
+
+  @include e(history){
+    &__title{
+      @include flex(space-between);
+      font-weight: bold;
+      margin-bottom: 20rpx;
+    }
+    &__list{
+      margin-bottom: 10rpx;
+      &__item{
+        padding: 10rpx 30rpx;
+        background-color: #f8f8f8;
+        font-size: 24rpx;
+        border-radius: 30rpx;
+        margin-right: 20rpx;
+        display: inline-block;
+        margin-bottom: 10rpx;
+      }
+    }
+  }
+
+  @include e(hot){
+     &__title{
+        font-weight: bold;
+        margin-bottom: 20rpx;
+     }
+     &__list{
+       &__item{
+         @include flex(flex-start);
+         margin-bottom: 20rpx;
+         color: #bbbbbb;
+         &__index{
+           font-size: 36rpx;
+           width: 70rpx;
+           flex: none;
+           &.spec{
+             color: #f00;
+           }
+         }
+
+         &__info{
+          font-size: 28rpx;
+         
+           &__title{
+             color: #000;
+            font-size: 36rpx;
+            margin-right: 20rpx;
+            &.spec{
+              font-weight: bold;
+            }
+           }
+           &__desc{
+            font-size: 26px;
+            margin-top: 10px;
+          }
+           &__icon{
+            max-width: 60rpx;
+            margin-left: 40rpx;
+            &.spec{
+              max-width: 30rpx;
+            }
+           }
+         }
+       }
+     }
+  }
+}

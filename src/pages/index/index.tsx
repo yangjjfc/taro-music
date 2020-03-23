@@ -5,6 +5,8 @@ import { AtSearchBar, AtAvatar } from 'taro-ui'
 import { connect } from '@tarojs/redux'
 import http from "@/utils/axios/index";
 import CLoading from '@/components/CLoading';
+import CMusic from '@/components/CMusic'
+
 import { songType } from '@/store/constants/commonType'
 import {
   getRecommendPlayList,
@@ -139,7 +141,7 @@ class Index extends Component {
  * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
  */
   config: Config = {
-    navigationBarTitleText: '首页'
+    navigationBarTitleText: '音乐'
   }
 
   constructor(props) {
@@ -172,10 +174,9 @@ class Index extends Component {
 
   componentDidHide() { }
   //修改input val
-  changeVal = (value) => {
-    this.setState({
-      bannerList: [],
-      searchValue: value
+  handleSearch = () => {
+    Taro.navigateTo({
+      url: `/pages/search/index`
     })
   }
   //获取banner
@@ -213,11 +214,16 @@ class Index extends Component {
   }
   render() {
     const { showLoading, bannerList, searchValue } = this.state
+    const { recommendPlayList, song } = this.props
 
     return (
       <View className='yl-index'>
+        {/* loading */}
         <CLoading fullPage={true} hide={!showLoading} />
-        <AtSearchBar value={searchValue} onChange={this.changeVal} />
+        <CMusic songInfo={this.props.song} isHome={true} onUpdatePlayStatus={this.props.updatePlayStatus.bind(this)} />
+        <View onClick = {this.handleSearch}>
+          <AtSearchBar value={searchValue} onChange={this.handleSearch}   />
+        </View>
         <View className="yl-index__content">
           <Swiper className='yl-index__banner' indicatorColor='#999' indicatorActiveColor='#333' circular indicatorDots autoplay>
             {
@@ -228,7 +234,7 @@ class Index extends Component {
               )
             }
           </Swiper>
-
+          {/* 导航 */}
           <View className='yl-index__tab'>
             {
               this.tabs.map((item) =>
@@ -240,6 +246,27 @@ class Index extends Component {
                 </View>
               )
             }
+          </View>
+          <View className="yl-index__recommend">
+            <View className="yl-index__recommend__title">推荐歌单</View>
+            <View className="yl-index__recommend__content">
+              {
+                recommendPlayList.map((item) => (
+                  <View className="yl-index__recommend__item" key={item.id}>
+                    <Image src={`${item.picUrl}?imageView&thumbnail=250x0`} className='yl-index__recommend__item__img' />
+                    <View className='yl-index__recommend__item__num' >
+                      <Text className='at-icon at-icon-sound'></Text>
+                        {
+                          item.playCount < 10000 ?
+                            item.playCount :
+                            `${Number(item.playCount / 10000).toFixed(0)}万`
+                        }
+                    </View>
+                    <View className='yl-index__recommend__item__title'>{item.name}</View>
+                  </View>
+                ))
+              }
+            </View>
           </View>
         </View>
       </View>

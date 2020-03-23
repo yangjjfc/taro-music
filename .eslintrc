@@ -3,7 +3,7 @@
   "parser": "@typescript-eslint/parser",
   "rules": {
     "no-unused-vars": ["error", { "varsIgnorePattern": "Taro" }],
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".tsx"] }],
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".tsx", ".ts"] }],
     "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "Taro" }],
     "@typescript-eslint/member-delimiter-style": ["error", {
       "multiline": {
