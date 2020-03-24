@@ -432,4 +432,9 @@ class Page extends Component {
 //
 // #endregion
 
+interface Page {
+    props: InitProps
+    state: PageState
+}
+
 export default Page as ComponentClass<InitProps, PageState>;
