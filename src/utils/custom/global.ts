@@ -14,5 +14,11 @@ export const setStorageSync = (key: string, value: object) => {
 
 //清除store
 export const clearStorageSync = () => {
-    Taro.clearStorageSync()
+    Taro.clearStorageSync();
+}
+
+
+//简单深拷贝
+export const deepClone = (data:{}={}) => {
+    return JSON.parse(JSON.stringify(data));
 }

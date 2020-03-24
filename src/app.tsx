@@ -24,6 +24,7 @@ class App extends Component {
    */
   config: Config = {
     pages: [
+      'pages/searchResult/index',
       'pages/index/sub/search/index',
       'pages/index/index',
     ],

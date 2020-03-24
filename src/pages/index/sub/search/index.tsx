@@ -89,7 +89,7 @@ class Page extends Component {
   //跳转搜索结果
   goResult(keywords:string) {
     let historyList: string[] = this.state.historyList;
-    if (historyList.length >= 4) {
+    if (historyList.length >= 5) {
       historyList.splice(0,1,keywords)
     } else {
       historyList.unshift(keywords);
