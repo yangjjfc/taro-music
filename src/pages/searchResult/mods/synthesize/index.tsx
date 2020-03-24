@@ -62,7 +62,8 @@ const totalInfo:PageState['totalInfo']= {
 
 
 class Page extends Component {
-
+  static defaultProps = {
+  }
   constructor (props) {
     super(props)
     this.state = {
