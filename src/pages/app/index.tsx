@@ -1,6 +1,6 @@
-import { ComponentClass } from 'react'
-import Taro, { Component, Config } from '@tarojs/taro'
-import { View } from '@tarojs/components'
+import { ComponentClass } from 'react';
+import Taro, { Component, Config } from '@tarojs/taro';
+import { View } from '@tarojs/components';
 
 
 class Index extends Component {
@@ -9,21 +9,21 @@ class Index extends Component {
         navigationBarTitleText: 'taro-music'
     }
 
-    componentWillReceiveProps(nextProps) {
-        console.log(this.props, nextProps)
+    componentWillReceiveProps (nextProps) {
+        console.log(this.props, nextProps);
     }
 
-    componentWillUnmount() { }
+    componentWillUnmount () { }
 
-    componentDidShow() { }
+    componentDidShow () { }
 
-    componentDidHide() { }
+    componentDidHide () { }
 
-    render() {
+    render () {
         return (
             <View>
             </View>
-        )
+        );
     }
 }
 

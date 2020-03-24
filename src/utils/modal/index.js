@@ -1,7 +1,7 @@
-import Taro from '@tarojs/taro'
+import Taro from '@tarojs/taro';
 
 export const showModal = (opt) => new Promise((resolve, reject) => {
-    let _json = {
+    const _json = {
         title: '提示',
         success: function (res) {
             if (res.confirm) {

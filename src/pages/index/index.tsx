@@ -1,13 +1,13 @@
-import { ComponentClass } from 'react'
-import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Image, Text, Swiper, SwiperItem, Input } from '@tarojs/components'
-import { AtSearchBar, AtAvatar } from 'taro-ui'
-import { connect } from '@tarojs/redux'
-import http from "@/utils/axios/index";
+import { ComponentClass } from 'react';
+import Taro, { Component, Config } from '@tarojs/taro';
+import { View, Image, Text, Swiper, SwiperItem} from '@tarojs/components';
+import { AtSearchBar, AtAvatar } from 'taro-ui';
+import { connect } from '@tarojs/redux';
+import http from '@/utils/axios/index';
 import CLoading from '@/components/CLoading';
-import CMusic from '@/components/CMusic'
+import CMusic from '@/components/CMusic';
 
-import { songType } from '@/store/constants/commonType'
+import { songType } from '@/store/constants/commonType';
 import {
   getRecommendPlayList,
   getRecommendDj,
@@ -15,10 +15,10 @@ import {
   getRecommend,
   getSongInfo,
   updatePlayStatus
-} from '@/store/actions/song'
+} from '@/store/actions/song';
 
 
-import './index.scss'
+import './index.scss';
 
 // #region 书写注意
 //
@@ -31,51 +31,51 @@ import './index.scss'
 // #endregion
 
 type PageStateProps = {
-  song: songType,
+  song: songType
   counter: {
     num: number
-  },
+  }
   recommendPlayList: Array<{
-    id: number,
-    name: string,
-    picUrl: string,
-    playCount: number
-  }>,
-  recommendDj: Array<{
-    name: string,
+    id: number
+    name: string
     picUrl: string
-  }>,
-  recommendNewSong: any,
+    playCount: number
+  }>
+  recommendDj: Array<{
+    name: string
+    picUrl: string
+  }>
+  recommendNewSong: any
   recommend: any
 }
 
 type PageDispatchProps = {
-  getRecommendPlayList: () => any,
-  getRecommendDj: () => any,
-  getRecommendNewSong: () => any,
-  getRecommend: () => any,
-  getSongInfo: (object) => any,
+  getRecommendPlayList: () => any
+  getRecommendDj: () => any
+  getRecommendNewSong: () => any
+  getRecommend: () => any
+  getSongInfo: (object) => any
   updatePlayStatus: (object) => any
 }
 
 type PageOwnProps = {}
 
 type PageState = {
-  current: number,
-  showLoading: boolean,
+  current: number
+  showLoading: boolean
   bannerList: Array<{
-    typeTitle: string,
-    pic: string,
+    typeTitle: string
+    pic: string
     targetId: number
-  }>,
+  }>
   searchValue: string
 }
 
 type IProps = PageStateProps & PageDispatchProps & PageOwnProps
 
 interface Index {
-  props: IProps;
-  state: any;
+  props: IProps
+  state: any
 }
 
 @connect(({ song }) => ({
@@ -85,23 +85,23 @@ interface Index {
   recommendNewSong: song.recommendNewSong,
   recommend: song.recommend
 }), (dispatch) => ({
-  getRecommendPlayList() {
-    dispatch(getRecommendPlayList())
+  getRecommendPlayList () {
+    dispatch(getRecommendPlayList());
   },
-  getRecommendDj() {
-    dispatch(getRecommendDj())
+  getRecommendDj () {
+    dispatch(getRecommendDj());
   },
-  getRecommendNewSong() {
-    dispatch(getRecommendNewSong())
+  getRecommendNewSong () {
+    dispatch(getRecommendNewSong());
   },
-  getRecommend() {
-    dispatch(getRecommend())
+  getRecommend () {
+    dispatch(getRecommend());
   },
-  getSongInfo(object) {
-    dispatch(getSongInfo(object))
+  getSongInfo (object) {
+    dispatch(getSongInfo(object));
   },
-  updatePlayStatus(object) {
-    dispatch(updatePlayStatus(object))
+  updatePlayStatus (object) {
+    dispatch(updatePlayStatus(object));
   }
 }))
 class Index extends Component {
@@ -144,42 +144,35 @@ class Index extends Component {
     navigationBarTitleText: '音乐'
   }
 
-  constructor(props) {
-    super(props)
+  constructor (props) {
+    super(props);
     this.state = {
       showLoading: true,
       searchValue: ''
-    }
+    };
   }
 
 
-  componentWillMount() {
+  componentWillMount () {
     this.initData();
     this.getBanner();
   }
-  componentDidMount() {
+  componentDidMount () {
     this.removeLoading();
   }
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps)
+  componentWillReceiveProps (nextProps) {
+    console.log(this.props, nextProps);
     this.setState({
       showLoading: false
-    })
+    });
   }
-
-  componentWillUnmount() {
-  }
-
-  componentDidShow() { }
-
-  componentDidHide() { }
-  //修改input val
+  // 修改input val
   handleSearch = () => {
     Taro.navigateTo({
-      url: `/pages/search/index`
-    })
+      url: '/pages/search/index'
+    });
   }
-  //获取banner
+  // 获取banner
   getBanner = () => {
     http('/banner', {
       type: 2
@@ -187,44 +180,44 @@ class Index extends Component {
       if (res.banners) {
         this.setState({
           bannerList: res.banners
-        })
+        });
       }
-    })
+    });
   }
 
-  initData() {
-    //获取推荐歌单
+  initData () {
+    // 获取推荐歌单
     this.props.getRecommendPlayList();
-    //获取推荐新音乐
+    // 获取推荐新音乐
     this.props.getRecommendNewSong();
-    //获取推荐电台
+    // 获取推荐电台
     this.props.getRecommendDj();
-    //获取推荐节目
+    // 获取推荐节目
     this.props.getRecommend();
   }
 
-  //去除loading
-  removeLoading() {
-    const { recommendPlayList, recommendDj } = this.props
+  // 去除loading
+  removeLoading () {
+    const { recommendPlayList, recommendDj } = this.props;
     if (recommendPlayList.length || recommendDj.length) {
       this.setState({
         showLoading: false
-      })
+      });
     }
   }
-  render() {
-    const { showLoading, bannerList, searchValue } = this.state
-    const { recommendPlayList, song } = this.props
+  render () {
+    const { showLoading, bannerList, searchValue } = this.state;
+    const { recommendPlayList, song } = this.props;
 
     return (
       <View className='yl-index'>
         {/* loading */}
-        <CLoading fullPage={true} hide={!showLoading} />
-        <CMusic songInfo={this.props.song} isHome={true} onUpdatePlayStatus={this.props.updatePlayStatus.bind(this)} />
-        <View onClick = {this.handleSearch}>
-          <AtSearchBar value={searchValue} onChange={this.handleSearch}   />
+        <CLoading fullPage hide={!showLoading} />
+        <CMusic songInfo={this.props.song} isHome onUpdatePlayStatus={this.props.updatePlayStatus.bind(this)} />
+        <View onClick={this.handleSearch}>
+          <AtSearchBar value={searchValue} onChange={this.handleSearch} />
         </View>
-        <View className="yl-index__content">
+        <View className='yl-index__content'>
           <Swiper className='yl-index__banner' indicatorColor='#999' indicatorActiveColor='#333' circular indicatorDots autoplay>
             {
               bannerList.map((item) =>
@@ -247,20 +240,20 @@ class Index extends Component {
               )
             }
           </View>
-          <View className="yl-index__recommend">
-            <View className="yl-index__recommend__title">推荐歌单</View>
-            <View className="yl-index__recommend__content">
+          <View className='yl-index__recommend'>
+            <View className='yl-index__recommend__title'>推荐歌单</View>
+            <View className='yl-index__recommend__content'>
               {
                 recommendPlayList.map((item) => (
-                  <View className="yl-index__recommend__item" key={item.id}>
+                  <View className='yl-index__recommend__item' key={item.id}>
                     <Image src={`${item.picUrl}?imageView&thumbnail=250x0`} className='yl-index__recommend__item__img' />
                     <View className='yl-index__recommend__item__num' >
                       <Text className='at-icon at-icon-sound'></Text>
-                        {
-                          item.playCount < 10000 ?
-                            item.playCount :
-                            `${Number(item.playCount / 10000).toFixed(0)}万`
-                        }
+                      {
+                        item.playCount < 10000 ?
+                          item.playCount :
+                          `${Number(item.playCount / 10000).toFixed(0)}万`
+                      }
                     </View>
                     <View className='yl-index__recommend__item__title'>{item.name}</View>
                   </View>
@@ -270,7 +263,7 @@ class Index extends Component {
           </View>
         </View>
       </View>
-    )
+    );
   }
 }
 
@@ -281,4 +274,4 @@ class Index extends Component {
 //
 // #endregion
 
-export default Index as ComponentClass<PageOwnProps, PageState>
+export default Index as ComponentClass<PageOwnProps, PageState>;

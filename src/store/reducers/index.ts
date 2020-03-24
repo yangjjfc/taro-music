@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import song from './song'
+import song from './song';
 
 const rootReducer = combineReducers({
     song

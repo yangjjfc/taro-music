@@ -1,8 +1,9 @@
 import Fly from 'flyio/dist/npm/wx';
-import { Headers, Method } from './index.d'
+import { Headers, Method } from './index.d';
 import Interceptor from './interceptor';
+
 const fly = new Fly();
-const TimeOut: number = 15000;
+const TimeOut = 15000;
 // 初始化拦截器
 new Interceptor({ TimeOut, fly }); // eslint-disable-line no-new
 // 配置

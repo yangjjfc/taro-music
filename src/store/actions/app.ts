@@ -23,7 +23,6 @@ export default (state = defaultState, action) => {
 };
 
 
-
 /**
  * actios
  */
@@ -38,7 +37,7 @@ export const setPathName = msg => ({
 });
 // 是否展开菜单
 export const toggleExpansion = () => (dispatch, getState) => {
-    let collapsed = getState().app.collapsed;
+    const collapsed = getState().app.collapsed;
     dispatch({
         msg: !collapsed,
         type: ActionType.USER_EXPANSION

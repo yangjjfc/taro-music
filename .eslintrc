@@ -1,28 +1,113 @@
 {
-  "extends": ["taro", "plugin:@typescript-eslint/recommended"],
-  "parser": "@typescript-eslint/parser",
-  "rules": {
-    "no-unused-vars": ["error", { "varsIgnorePattern": "Taro" }],
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".tsx", ".ts"] }],
-    "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "Taro" }],
-    "@typescript-eslint/member-delimiter-style": ["error", {
-      "multiline": {
-        "delimiter": "none",
-        "requireLast": false
-      },
-      "singleline": {
-        "delimiter": "semi",
-        "requireLast": false
-      }
-    }],
-    "@typescript-eslint/explicit-function-return-type": 0,
-    "@typescript-eslint/no-empty-function": ["warn"]
-  },
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
+    "extends": ["taro", "plugin:@typescript-eslint/recommended"],
+    "parser": "@typescript-eslint/parser",
+    "rules": {
+        "no-unused-vars": ["error", { "varsIgnorePattern": "Taro" }],
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".tsx", ".ts"] }],
+        "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "Taro" }],
+        "@typescript-eslint/member-delimiter-style": ["error", {
+            "multiline": {
+                "delimiter": "none",
+                "requireLast": false
+            },
+            "singleline": {
+                "delimiter": "semi",
+                "requireLast": false
+            }
+        }],
+        "@typescript-eslint/explicit-function-return-type": 0,
+        "@typescript-eslint/no-empty-function": ["warn"],
+        "@typescript-eslint/no-explicit-any":0,
+        "@typescript-eslint/ban-ts-ignore":0,
+        "@typescript-eslint/camelcase":0,
+        "import/prefer-default-export":0,
+        "import/first":0,
+        "react/sort-comp":0,
+        "taro/this-props-function": 0,
+        "no-alert": 2,
+        "no-caller": 2,
+        "no-console": 0,
+        "no-constant-condition": 2,
+        "no-control-regex": 2,
+        "no-debugger": 2,
+        "no-delete-var": 2,
+        "no-dupe-keys": 2,
+        "no-dupe-args": 2,
+        "no-duplicate-case": 2,
+        "no-empty": 2,
+        "no-empty-character-class": 2,
+        "no-extra-boolean-cast": 2,
+        "no-extra-semi": 2,
+        "no-fallthrough": 2,
+        "no-func-assign": 2,
+        "no-inner-declarations": 2,
+        "no-invalid-regexp": 2,
+        "no-irregular-whitespace": 2,
+        "no-mixed-requires": 2,
+        "no-mixed-spaces-and-tabs": 2,
+        "linebreak-style": [0, "windows"],
+        "no-multiple-empty-lines": 2,
+        "no-negated-in-lhs": 2,
+        "no-new-require": 2,
+        "no-obj-calls": 2,
+        "no-octal": 2,
+        "no-redeclare": 2,
+        "no-regex-spaces": 2,
+        "no-sparse-arrays": 1,
+        "no-undef": 1,
+        "no-tabs": "off",
+        "no-trailing-spaces": "off", // 不让有空行
+        "spaced-comment": 1,
+        "no-unreachable": 2,
+        "no-warning-comments": 0, // 不能有警告备注 , { "terms": ["TODO", "FIXME", "xxx"], "LOCATION": "start" }
+        "array-bracket-spacing": 1,
+        "arrow-body-style": 2,
+        // "comma-dangle": 0,
+        "comma-dangle": ["error", "never"], // 是否允许对象中出现结尾逗号
+        "complexity": 1,
+        "computed-property-spacing": 2,
+        "curly": 1,
+        "dot-notation": 2,
+        "func-style": 0,
+        // "func-style": [2, "declaration"],
+        "indent": 0,
+        "key-spacing": 1,
+        "eol-last": 0,
+        "max-depth": 2,
+        "max-nested-callbacks": 2,
+        "prefer-promise-reject-errors": 0,
+        "one-var": [
+            "error",
+            {
+                // "let": "never",
+                // "const": "never",
+                "var": "always"
+            }
+        ],
+        "operator-assignment": 2,
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"],
+        "semi-spacing": 2,
+        // "space-after-keywords": 1,
+        // "space-before-keywords": 1,
+        "space-before-blocks": 2,
+        "space-before-function-paren": 1,
+        "space-in-parens": 2,
+        "space-unary-ops": 2,
+        "use-isnan": 2,
+        "valid-jsdoc": 0,
+        "valid-typeof": 2,
+        // allow paren-less arrow functions
+        "arrow-parens": 0,
+        // allow async-await
+        "generator-star-spacing": 0,
+        // allow debugger during development
     },
-    "useJSXTextNode": true,
-    "project": "./tsconfig.json"
-  }
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "useJSXTextNode": true,
+        "project": "./tsconfig.json"
+    }
 }

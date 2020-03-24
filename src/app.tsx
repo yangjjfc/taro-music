@@ -1,9 +1,9 @@
-import Taro, { Component, Config } from '@tarojs/taro'
-import { Provider } from '@tarojs/redux'
-import AppContainer from './pages/app' //临时容器
-import configStore from './store' 
-import './style/taro-ui.scss'
-import './style/basic.scss'
+import Taro, { Component, Config } from '@tarojs/taro';
+import { Provider } from '@tarojs/redux';
+import AppContainer from './pages/app'; // 临时容器
+import configStore from './store'; 
+import './style/taro-ui.scss';
+import './style/basic.scss';
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -11,7 +11,7 @@ import './style/basic.scss'
 //   require('nerv-devtools')
 // }
 
-const store = configStore()
+const store = configStore();
 
 class App extends Component {
 
@@ -26,7 +26,7 @@ class App extends Component {
     pages: [
       'pages/searchResult/index',
       'pages/index/sub/search/index',
-      'pages/index/index',
+      'pages/index/index'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -36,14 +36,6 @@ class App extends Component {
     }
   }
 
-  componentDidMount () {}
-
-  componentDidShow () {}
-
-  componentDidHide () {}
-
-  componentDidCatchError () {}
-
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
   render () {
@@ -51,8 +43,8 @@ class App extends Component {
       <Provider store={store}>
         <AppContainer />
       </Provider>
-    )
+    );
   }
 }
 
-Taro.render(<App />, document.getElementById('app'))
+Taro.render(<App />, document.getElementById('app'));

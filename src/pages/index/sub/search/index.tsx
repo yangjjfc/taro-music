@@ -1,32 +1,31 @@
-import { ComponentClass } from 'react'
-import { AtSearchBar, AtIcon } from 'taro-ui'
-import Taro, { Component, Config } from '@tarojs/taro'
-import CLoading from '@/components/CLoading'
-import classnames from 'classnames'
-import { View, Text, Image, ScrollView } from '@tarojs/components'
-import $http from "@/utils/axios/index";
+import { ComponentClass } from 'react';
+import { AtSearchBar, AtIcon } from 'taro-ui';
+import Taro, { Component, Config } from '@tarojs/taro';
+import CLoading from '@/components/CLoading';
+import classnames from 'classnames';
+import { View, Text, Image, ScrollView } from '@tarojs/components';
+import $http from '@/utils/axios/index';
 import { getStorageSync, setStorageSync,clearStorageSync } from '@/utils/custom/global';
-import './index.scss'
+import './index.scss';
 
 
 type PageState = {
-  searchValue: string,
+  searchValue: string
   hotList: Array<{
-    searchWord: string,
-    score: number,
-    iconUrl: string,
-    content: string,
+    searchWord: string
+    score: number
+    iconUrl: string
+    content: string
     iconType: number
-  }>,
+  }>
   historyList: Array<string>
 }
 type PageOwnProps = {}
 
 
-
 interface Page {
-  props: PageOwnProps;
-  state: PageState;
+  props: PageOwnProps
+  state: PageState
 }
 
 class Page extends Component {
@@ -42,55 +41,53 @@ class Page extends Component {
     navigationBarTitleText: '搜索'
   }
 
-  constructor(props) {
-    super(props)
+  constructor (props) {
+    super(props);
     this.state = {
       searchValue: '',
       hotList: [],
       historyList: []
-    }
+    };
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps)
+  componentWillReceiveProps (nextProps) {
+    console.log(this.props, nextProps);
   }
 
-  componentDidMount() {
-    this.getHotSearch()
+  componentDidMount () {
+    this.getHotSearch();
   }
 
-  componentWillUnmount() { }
 
-  componentDidShow() {
+  componentDidShow () {
     this.getHistoryList();
   }
 
-  componentDidHide() { }
 
-  //获取搜索历史
-  getHistoryList() {
-    let historyList = getStorageSync('historyList');
+  // 获取搜索历史
+  getHistoryList () {
+    const historyList = getStorageSync('historyList');
     if (historyList) {
       this.setState({
         historyList: historyList
-      })
+      });
     }
   }
 
-  searchTextChange(val) {
+  searchTextChange (val) {
     this.setState({
       searchValue: val
-    })
+    });
   }
 
-  searchResult() {
-    this.goResult(this.state.searchValue)
+  searchResult () {
+    this.goResult(this.state.searchValue);
   }
-  //跳转搜索结果
-  goResult(keywords:string) {
+  // 跳转搜索结果
+  goResult (keywords: string) {
     let historyList: string[] = this.state.historyList;
     if (historyList.length >= 5) {
-      historyList.splice(0,1,keywords)
+      historyList.splice(0,1,keywords);
     } else {
       historyList.unshift(keywords);
     }
@@ -102,29 +99,29 @@ class Page extends Component {
     // })
   }
 
-  //清空历史
-  clearKeywordInHistory() {
+  // 清空历史
+  clearKeywordInHistory () {
     this.setState({
       historyList: []
-    })
+    });
     clearStorageSync();
   }
 
-  //搜索热榜
-  getHotSearch() {
+  // 搜索热榜
+  getHotSearch () {
     $http('/search/hot/detail', {
     }).then((res) => {
       if (res.data) {
         this.setState({
           hotList: res.data
-        })
+        });
       }
-    })
+    });
   }
 
 
-  render() {
-    const { searchValue, hotList, historyList } = this.state
+  render () {
+    const { searchValue, hotList, historyList } = this.state;
     return (
       <View className='yl-search'>
         <AtSearchBar
@@ -134,7 +131,7 @@ class Page extends Component {
           onChange={this.searchTextChange.bind(this)}
           onActionClick={this.searchResult.bind(this)}
           onConfirm={this.searchResult.bind(this)}
-          focus={true}
+          focus
           className='yl-search__input'
         />
         <ScrollView className='yl-search__content' scrollY>
@@ -170,29 +167,32 @@ class Page extends Component {
                       'yl-search__hot__list__item__index': true,
                       spec: index <= 2
                     })
-                  }>
+                  }
+                  >
                     {index + 1}
                   </View>
                   <View className='yl-search__hot__list__item__info'>
-                    <View className="">
+                    <View className=''>
                       <Text className={
                         classnames({
                          'yl-search__hot__list__item__info__title': true,
                           spec: index <= 2
                         })
-                      }>
+                      }
+                      >
                         {item.searchWord}
                       </Text>
                       <Text className='yl-search__hot__list__item__info__score'>
                         {item.score}
                       </Text>
                       {
-                        item.iconUrl ? <Image src={item.iconUrl} mode="widthFix" className={
+                        item.iconUrl ? <Image src={item.iconUrl} mode='widthFix' className={
                           classnames({
                             'yl-search__hot__list__item__info__icon': true,
                             spec: item.iconType === 5
                           })
-                        } /> : ''
+                        }
+                        /> : ''
                       }
                     </View>
                     <View className='yl-search__hot__list__item__info__desc'>
@@ -205,7 +205,7 @@ class Page extends Component {
           </View>
         </ScrollView>
       </View>
-    )
+    );
   }
 }
 
@@ -216,4 +216,4 @@ class Page extends Component {
 //
 // #endregion
 
-export default Page as ComponentClass<PageOwnProps, PageState>
+export default Page as ComponentClass<PageOwnProps, PageState>;

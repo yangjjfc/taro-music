@@ -1,13 +1,13 @@
 /**
  * fly interceptor 拦截器配置
  */
-import { showModal } from '../modal/index.js';
 import { Environment } from '@/utils/config/index';
+import { showModal } from '../modal/index.js';
 
 class Interceptor {
     private fly: any;
     private req: any;
-    constructor({ TimeOut, fly }) {
+    constructor ({ TimeOut, fly }) {
         this.fly = fly;
         this.req = {
             timeout: TimeOut
@@ -16,7 +16,7 @@ class Interceptor {
         this.response();
     }
 
-    requestTimeout(name) {
+    requestTimeout (name) {
         setTimeout(() => {
             if (this.req[name]) {
                 delete this.req[name];
@@ -25,7 +25,7 @@ class Interceptor {
     }
 
     // 对请求数据做些什么
-    request() {
+    request () {
         this.fly.interceptors.request.use((request) => {
             request.urlGuid = request.url; // 防止同个链接连续请求
             // 本地
@@ -45,7 +45,7 @@ class Interceptor {
     }
 
     // 对响应数据做点什么
-    response() {
+    response () {
         this.fly.interceptors.response.use((response) => {
             delete this.req[response.request.urlGuid]; // 防止同个链接连续请求
             if (response.data) {
@@ -59,12 +59,10 @@ class Interceptor {
                 return Promise.reject(response);
             }
             return response;
-        }, (error) => {
-            return Promise.reject(error);
-        });
+        }, (error) => Promise.reject(error));
     }
 
-    formatResponseData(response) {
+    formatResponseData (response) {
         let responsex = {}, apiCode = response.config.url;
         if (response.config.url.includes('apiCode')) {
             apiCode = response.config.url.split('apiCode')[1];

@@ -1,30 +1,30 @@
 // 获取歌曲详情
-export const GETSONGDETAIL: string = 'GETSONGDETAIL'
+export const GETSONGDETAIL = 'GETSONGDETAIL';
 // 获取歌单详情
-export const GETPLAYLISTDETAIL: string = 'GETPLAYLISTDETAIL'
+export const GETPLAYLISTDETAIL = 'GETPLAYLISTDETAIL';
 // 获取推荐歌单
-export const GETRECOMMENDPLAYLIST: string = 'GETRECOMMENDPLAYLIST'
+export const GETRECOMMENDPLAYLIST = 'GETRECOMMENDPLAYLIST';
 // 获取推荐电台
-export const GETRECOMMENDDJ: string = 'GETRECOMMENDDJ'
+export const GETRECOMMENDDJ = 'GETRECOMMENDDJ';
 // 获取推荐新音乐
-export const GETRECOMMENDNEWSONG: string = 'GETRECOMMENDNEWSONG'
+export const GETRECOMMENDNEWSONG = 'GETRECOMMENDNEWSONG';
 // 获取推荐精彩节目
-export const GETRECOMMEND: string = 'GETRECOMMEND'
+export const GETRECOMMEND = 'GETRECOMMEND';
 // 获取歌曲详情
-export const GETSONGINFO: string = 'GETSONGINFO'
+export const GETSONGINFO = 'GETSONGINFO';
 // 切换播放模式
-export const CHANGEPLAYMODE: string = 'CHANGEPLAYMODE'
+export const CHANGEPLAYMODE = 'CHANGEPLAYMODE';
 // 喜欢或者取消喜欢音乐
-export const LIKEMUSIC: string = 'LIKEMUSIC'
+export const LIKEMUSIC = 'LIKEMUSIC';
 // 获取喜欢列表
-export const GETLIKEMUSICLIST: string = 'GETLIKEMUSICLIST'
+export const GETLIKEMUSICLIST = 'GETLIKEMUSICLIST';
 // 更新获取喜欢列表
-export const UPDATELIKEMUSICLIST: string = 'UPDATELIKEMUSICLIST'
+export const UPDATELIKEMUSICLIST = 'UPDATELIKEMUSICLIST';
 // 更新播放状态
-export const UPDATEPLAYSTATUS: string = 'UPDATEPLAYSTATUS'
+export const UPDATEPLAYSTATUS = 'UPDATEPLAYSTATUS';
 // 更新可播放列表
-export const UPDATECANPLAYLIST: string = 'UPDATECANPLAYLIST'
+export const UPDATECANPLAYLIST = 'UPDATECANPLAYLIST';
 // 更新最近播放tab
-export const UPDATERECENTTAB: string = 'UPDATERECENTTAB'
+export const UPDATERECENTTAB = 'UPDATERECENTTAB';
 // 重置播放列表
-export const RESETPLAYLIST: string = 'RESETPLAYLIST'
+export const RESETPLAYLIST = 'RESETPLAYLIST';
