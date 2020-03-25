@@ -1,11 +1,169 @@
 @include b(synthesize) {
+
     @include e(scroll) {
         height: calc(100vh - 172px);
+        padding: 0 36px;
+        box-sizing: border-box;
     }
 
     @include e(nodata) {
         @include flex;
         margin-top: 50px;
         font-size: 22px;
+    }
+
+    @include e(content) {
+        &__title {
+            font-size: 38px;
+            font-weight: 700;
+            padding: 20px 0;
+        }
+        // 单曲
+        &__music {
+            @include flex(flex-start);
+            padding: 15rpx 0;
+            width: 100%;
+            box-sizing: border-box;
+            border-bottom: 1rpx solid #eeeeee;
+
+            &__info {
+                flex: 1;
+
+                &__name {
+                    font-size: 34px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                &__desc {
+                    font-size: 24rpx;
+                    color: #888888;
+                    margin-top: 10px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+
+            &__icon {
+                flex: none;
+                font-size: 30rpx;
+                color: #dddddd;
+                padding: 40rpx 0 40rpx 80rpx;
+            }
+        }
+
+        &__more {
+            @include flex;
+            font-size: 24rpx;
+            margin: 10px;
+            color: #888888;
+        }
+
+        // 歌单
+        &__playList {
+            @include flex(flex-start);
+            margin-bottom: 15px;
+
+            &__cover {
+                width: 150px;
+                height: 150px;
+                border-radius: 10px;
+                margin-right: 20px;
+                display: block;
+            }
+
+            &__info {
+                &__title {
+                    font-size: 26px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                &__desc {
+                    font-size: 20rpx;
+                    color: #888888;
+                    margin-top: 10px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+        // 视频
+        &__video {
+            @include flex(flex-start);
+            margin-bottom: 15px;
+
+            &__cover--wrap {
+                position: relative;
+                font-size: 20rpx;
+                color: #ffffff;
+
+                &--playtime {
+                    position: absolute;
+                    right: 30rpx;
+                    top: 5rpx;
+                    display: flex;
+                    z-index: 9;
+                    color: #fff;
+                    align-items: center;
+                }
+            }
+
+            &__cover {
+                width: 200px;
+                height: 120px;
+                border-radius: 10px;
+                margin-right: 20px;
+                display: block;
+            }
+
+            &__info {
+                &__title {
+                    font-size: 26px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                &__desc {
+                    font-size: 20rpx;
+                    color: #888888;
+                    margin-top: 10px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+
+        // 相关搜索
+        &__simquery {
+            &__item {
+                margin-right: 20rpx;
+                margin-bottom: 20rpx;
+                padding: 6rpx 20rpx;
+                font-size: 22rpx;
+                background-color: #f8f8f8;
+                color: #616161;
+                border-radius: 20rpx;
+                display: inline-block;
+            }
+        }
+
+        // 歌手
+        &__artist {
+            @include flex(flex-start);
+            font-size: 26px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 15px;
+
+            &__cover {
+                width: 100rpx;
+                height: 100rpx;
+                border-radius: 50%;
+                margin-right: 20rpx;
+                background-color: #f8f8f8;
+
+            }
+        }
     }
 }

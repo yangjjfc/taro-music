@@ -8,7 +8,7 @@ import { connect } from '@tarojs/redux';
 import CMusic from '@/components/CMusic';
 import { PageState, InitProps } from './index.d';
 import { getStorageSync, setStorageSync, deepClone } from '@/utils/custom/global';
-import { formatNumber } from '@/utils/custom/common';
+import { formatNumber,formatCount } from '@/utils/custom/common';
 
 import { updateCanplayList, getSongInfo, updatePlayStatus } from '@/store/actions/song';
 import $http from '@/utils/axios/index';
@@ -228,21 +228,21 @@ class Page extends Component {
                                         </View>
                                         {
                                             totalInfo.songInfo.songs.map((item) => (
-                                                <View key={item.id} className='searchResult__music'>
-                                                    <View className='searchResult__music__info' onClick={this.playSong.bind(this, item.id)}>
-                                                        <View className='searchResult__music__info__name'>
+                                                <View key={item.id} className='yl-synthesize__content__music'>
+                                                    <View className='yl-synthesize__content__music__info' onClick={this.playSong.bind(this, item.id)}>
+                                                        <View className='yl-synthesize__content__music__info__name'>
                                                             {item.name}
                                                         </View>
-                                                        <View className='searchResult__music__info__desc'>
+                                                        <View className='yl-synthesize__content__music__info__desc'>
                                                             {`${item.ar[0] ? item.ar[0].name : ''} - ${item.al.name}`}
                                                         </View>
                                                     </View>
-                                                    <View className='fa fa-ellipsis-v searchResult__music__icon' onClick={this.showMore.bind(this)}></View>
+                                                    <View className='icon icon-gengduo1 yl-synthesize__content__music__icon' onClick={this.showMore.bind(this)}></View>
                                                 </View>
                                             ))
                                         }
                                         {
-                                            totalInfo.songInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 1)}>
+                                            totalInfo.songInfo.moreText ? <View className='yl-synthesize__content__more' onClick={onSwitchTab.bind(this, 1)}>
                                                 {totalInfo.songInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                             </View> : ''
                                         }
@@ -251,29 +251,29 @@ class Page extends Component {
                             {
                                 totalInfo.playListInfo.playLists.length ?
                                     <View>
-                                        <View className='search_content__title'>
+                                        <View className='yl-synthesize__content__title'>
                                             歌单
                                         </View>
                                         <View>
                                             {
                                                 totalInfo.playListInfo.playLists.map((item, index) => (
-                                                    <View className='search_content__playList__item' key={item.id} onClick={this.goPlayListDetail.bind(this, item)}>
+                                                    <View className='yl-synthesize__content__playList' key={item.id} onClick={this.goPlayListDetail.bind(this, item)}>
                                                         <View>
-                                                            <Image src={item.coverImgUrl} className='search_content__playList__item__cover' />
+                                                            <Image src={item.coverImgUrl} className='yl-synthesize__content__playList__cover' />
                                                         </View>
-                                                        <View className='search_content__playList__item__info'>
-                                                            <View className='search_content__playList__item__info__title'>
+                                                        <View className='yl-synthesize__content__playList__info'>
+                                                            <View className='yl-synthesize__content__playList__info__title'>
                                                                 {item.name}
                                                             </View>
-                                                            <View className='search_content__playList__item__info__desc'>
+                                                            <View className='yl-synthesize__content__playList__info__desc'>
                                                                 <Text>
                                                                     {item.trackCount}首音乐
                                                                 </Text>
-                                                                <Text className='search_content__playList__item__info__desc__nickname'>
+                                                                <Text className='yl-synthesize__content__playList__info__desc__nickname'>
                                                                     by {item.creator.nickname}
                                                                 </Text>
                                                                 <Text>
-                                                                    {/* {formatCount(item.playCount)}次 */}
+                                                                    {formatCount(item.playCount)}次
                                                                 </Text>
                                                             </View>
                                                         </View>
@@ -281,7 +281,7 @@ class Page extends Component {
                                                 ))
                                             }
                                             {
-                                                totalInfo.playListInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 2)}>
+                                                totalInfo.playListInfo.moreText ? <View className='yl-synthesize__content__more' onClick={onSwitchTab.bind(this, 2)}>
                                                     {totalInfo.playListInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                                 </View> : ''
                                             }
@@ -291,27 +291,27 @@ class Page extends Component {
                             {
                                 totalInfo.videoInfo.videos.length ?
                                     <View>
-                                        <View className='search_content__title'>
+                                        <View className='yl-synthesize__content__title'>
                                             视频
                                         </View>
                                         <View>
                                             {
                                                 totalInfo.videoInfo.videos.map((item) => (
-                                                    <View className='search_content__video__item' key={item.vid} onClick={this.goVideoDetail.bind(this, item.vid, 'video')}>
-                                                        <View className='search_content__video__item__cover--wrap'>
-                                                            <View className='search_content__video__item__cover--playtime'>
+                                                    <View className='yl-synthesize__content__video' key={item.vid} onClick={this.goVideoDetail.bind(this, item.vid, 'video')}>
+                                                        <View className='yl-synthesize__content__video__cover--wrap'>
+                                                            <View className='yl-synthesize__content__video__cover--wrap--playtime'>
                                                                 <Text className='at-icon at-icon-play'></Text>
-                                                                {/* <Text>{formatCount(item.playTime)}</Text> */}
+                                                                <Text>{formatCount(item.playTime)}</Text>
                                                             </View>
-                                                            <Image src={item.coverUrl} className='search_content__video__item__cover' />
+                                                            <Image src={item.coverUrl} className='yl-synthesize__content__video__cover' />
                                                         </View>
-                                                        <View className='search_content__video__item__info'>
-                                                            <View className='search_content__video__item__info__title'>
+                                                        <View className='yl-synthesize__content__video__info'>
+                                                            <View className='yl-synthesize__content__video__info__title'>
                                                                 {item.title}
                                                             </View>
-                                                            <View className='search_content__video__item__info__desc'>
+                                                            <View className='yl-synthesize__content__video__info__desc'>
                                                                 <Text>{this.formatDuration(item.durationms)},</Text>
-                                                                <Text className='search_content__video__item__info__desc__nickname'>
+                                                                <Text className='yl-synthesize__content__video__info__desc__nickname'>
                                                                     by {item.creator[0].userName}
                                                                 </Text>
                                                             </View>
@@ -320,7 +320,7 @@ class Page extends Component {
                                                 ))
                                             }
                                             {
-                                                totalInfo.videoInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 3)}>
+                                                totalInfo.videoInfo.moreText ? <View className='yl-synthesize__content__more' onClick={onSwitchTab.bind(this, 3)}>
                                                     {totalInfo.videoInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                                 </View> : ''
                                             }
@@ -330,12 +330,12 @@ class Page extends Component {
 
                             {
                                 totalInfo.sim_query.sim_querys.length ? <View>
-                                    <View className='search_content__title'>
+                                    <View className='yl-synthesize__content__title'>
                                         相关搜索
                                     </View>
-                                    <View className='search_content__simquery'>
+                                    <View className='yl-synthesize__content__simquery'>
                                         {
-                                            totalInfo.sim_query.sim_querys.map((item) => <Text key={item.keyword} onClick={this.queryResultBySim.bind(this, item.keyword)} className='search_content__simquery__item'>{item.keyword}</Text>)
+                                            totalInfo.sim_query.sim_querys.map((item) => <Text key={item.keyword} onClick={this.queryResultBySim.bind(this, item.keyword)} className='yl-synthesize__content__simquery__item'>{item.keyword}</Text>)
                                         }
                                     </View>
                                 </View> : ''
@@ -343,20 +343,20 @@ class Page extends Component {
                             {
                                 totalInfo.artistInfo.artists.length ?
                                     <View>
-                                        <View className='search_content__title'>
+                                        <View className='yl-synthesize__content__title'>
                                             歌手
                                         </View>
                                         <View>
                                             {
                                                 totalInfo.artistInfo.artists.map((item) => (
-                                                    <View className='search_content__artist__item' key={item.id} onClick={this.showMore.bind(this)}>
-                                                        <Image src={item.picUrl} className='search_content__artist__item__cover' />
+                                                    <View className='yl-synthesize__content__artist' key={item.id} onClick={this.showMore.bind(this)}>
+                                                        <Image src={item.picUrl} className='yl-synthesize__content__artist__cover' />
                                                         <Text>{item.name}{item.alias[0] ? `（${item.alias[0]}）` : ''}</Text>
                                                     </View>
                                                 ))
                                             }
                                             {
-                                                totalInfo.artistInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 4)}>
+                                                totalInfo.artistInfo.moreText ? <View className='yl-synthesize__content__more' onClick={onSwitchTab.bind(this, 4)}>
                                                     {totalInfo.artistInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                                 </View> : ''
                                             }
@@ -366,25 +366,25 @@ class Page extends Component {
                             {
                                 totalInfo.albumInfo.albums.length ?
                                     <View>
-                                        <View className='search_content__title'>
+                                        <View className='yl-synthesize__content__title'>
                                             专辑
                                         </View>
                                         <View>
                                             {
                                                 totalInfo.albumInfo.albums.map((item) => (
-                                                    <View className='search_content__playList__item' key={item.id} onClick={this.showMore.bind(this)}>
+                                                    <View className='yl-synthesize__content__playList' key={item.id} onClick={this.showMore.bind(this)}>
                                                         <View>
-                                                            <Image src={item.picUrl} className='search_content__playList__item__cover' />
+                                                            <Image src={item.picUrl} className='yl-synthesize__content__playList__cover' />
                                                         </View>
-                                                        <View className='search_content__playList__item__info'>
-                                                            <View className='search_content__playList__item__info__title'>
+                                                        <View className='yl-synthesize__content__playList__info'>
+                                                            <View className='yl-synthesize__content__playList__info__title'>
                                                                 {item.name}
                                                             </View>
-                                                            <View className='search_content__playList__item__info__desc'>
+                                                            <View className='yl-synthesize__content__playList__info__desc'>
                                                                 <Text>
                                                                     {item.artist.name}
                                                                 </Text>
-                                                                <Text className='search_content__playList__item__info__desc__nickname'>
+                                                                <Text className='yl-synthesize__content__playList__info__desc__nickname'>
                                                                     {
                                                                         // item.containedSong ? `包含单曲：${item.containedSong}` : formatTimeStampToTime(item.publishTime)
                                                                     }
@@ -395,7 +395,7 @@ class Page extends Component {
                                                 ))
                                             }
                                             {
-                                                totalInfo.albumInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 5)}>
+                                                totalInfo.albumInfo.moreText ? <View className='yl-synthesize__content__more' onClick={onSwitchTab.bind(this, 5)}>
                                                     {totalInfo.albumInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                                 </View> : ''
                                             }
@@ -405,21 +405,21 @@ class Page extends Component {
                             {
                                 totalInfo.djRadioInfo.djRadios.length ?
                                     <View>
-                                        <View className='search_content__title'>
+                                        <View className='yl-synthesize__content__title'>
                                             电台
                                         </View>
                                         <View>
                                             {
                                                 totalInfo.djRadioInfo.djRadios.map((item) => (
-                                                    <View className='search_content__playList__item' key={item.id} onClick={this.showMore.bind(this)}>
+                                                    <View className='yl-synthesize__content__playList' key={item.id} onClick={this.showMore.bind(this)}>
                                                         <View>
-                                                            <Image src={item.picUrl} className='search_content__playList__item__cover' />
+                                                            <Image src={item.picUrl} className='yl-synthesize__content__playList__cover' />
                                                         </View>
-                                                        <View className='search_content__playList__item__info'>
-                                                            <View className='search_content__playList__item__info__title'>
+                                                        <View className='yl-synthesize__content__playList__info'>
+                                                            <View className='yl-synthesize__content__playList__info__title'>
                                                                 {item.name}
                                                             </View>
-                                                            <View className='search_content__playList__item__info__desc'>
+                                                            <View className='yl-synthesize__content__playList__info__desc'>
                                                                 <Text>
                                                                     {item.desc}
                                                                 </Text>
@@ -429,7 +429,7 @@ class Page extends Component {
                                                 ))
                                             }
                                             {
-                                                totalInfo.djRadioInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 6)}>
+                                                totalInfo.djRadioInfo.moreText ? <View className='yl-synthesize__content__more' onClick={onSwitchTab.bind(this, 6)}>
                                                     {totalInfo.djRadioInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                                 </View> : ''
                                             }
@@ -439,15 +439,15 @@ class Page extends Component {
                             {
                                 totalInfo.userListInfo.users.length ?
                                     <View>
-                                        <View className='search_content__title'>
+                                        <View className='yl-synthesize__content__title'>
                                             用户
                                         </View>
                                         <View>
                                             {
                                                 totalInfo.userListInfo.users.map((item) => (
-                                                    <View className='search_content__artist__item' key={item.userId} onClick={this.showMore.bind(this)}>
-                                                        <Image src={item.avatarUrl} className='search_content__artist__item__cover' />
-                                                        <View className='search_content__artist__item__info'>
+                                                    <View className='yl-synthesize__content__artist' key={item.userId} onClick={this.showMore.bind(this)}>
+                                                        <Image src={item.avatarUrl} className='yl-synthesize__content__artist__cover' />
+                                                        <View className='yl-synthesize__content__artist__info'>
                                                             <View>
                                                                 {item.nickname}
                                                                 {
@@ -459,7 +459,7 @@ class Page extends Component {
                                                             </View>
                                                             {
                                                                 item.signature ?
-                                                                    <View className='search_content__artist__item__desc'>
+                                                                    <View className='yl-synthesize__content__artist__desc'>
                                                                         {item.signature}
                                                                     </View> : ''
                                                             }
@@ -468,7 +468,7 @@ class Page extends Component {
                                                 ))
                                             }
                                             {
-                                                totalInfo.userListInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 7)}>
+                                                totalInfo.userListInfo.moreText ? <View className='yl-synthesize__content__more' onClick={onSwitchTab.bind(this, 7)}>
                                                     {totalInfo.userListInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                                 </View> : ''
                                             }
