@@ -15,51 +15,8 @@ import { IProps, PageState } from './index.d';
 import $http from '@/utils/axios/index';
 import { getStorageSync, setStorageSync, deepClone } from '@/utils/custom/global';
 import Synthesize from './mods/synthesize/index';
+import Song from './mods/song/index';
 import './index.scss';
-
-const totalInfo: PageState['totalInfo'] = {
-    loading: true,
-    noData: false,
-    userListInfo: {
-        users: [],
-        more: false,
-        moreText: ''
-    },
-    videoInfo: {
-        videos: [],
-        more: false,
-        moreText: ''
-    },
-    playListInfo: {
-        playLists: [],
-        more: false,
-        moreText: ''
-    },
-    songInfo: {
-        songs: [],
-        more: false,
-        moreText: ''
-    },
-    albumInfo: {
-        albums: [],
-        more: false,
-        moreText: ''
-    },
-    djRadioInfo: {
-        djRadios: [],
-        more: false,
-        moreText: ''
-    },
-    artistInfo: {
-        artists: [],
-        more: false,
-        moreText: ''
-    },
-    sim_query: {
-        sim_querys: [],
-        more: false
-    }
-};
 
 
 interface Page {
@@ -123,22 +80,20 @@ class Page extends Component {
 
     constructor (props) {
         super(props);
-        const { keywords='1' } = this.$router.params;
+        const { keywords = 'a' } = this.$router.params;
         this.state = {
             keywords,
+            show: false,
             activeTab: 0
         };
     }
 
     componentWillMount () {
-        const { keywords } = this.state;
-        Taro.setNavigationBarTitle({
-            title: `${keywords}的搜索结果`
-        });
+        this.switchTab(1);
     }
     componentDidShow () { }
     componentDidHide () { }
-    
+
 
     playSong (songId) {
         $http('/check/music', {
@@ -214,15 +169,16 @@ class Page extends Component {
             setStorageSync('historyList', historyList);
         }
     }
-    // 搜索
-    searchResult () {
+    // 初始化组件
+    initRender () {
         this.setState({
-            totalInfo: Object.assign(this.state.totalInfo, {
-                loading: true
-            })
-        }, () => {
-            this.switchTab(0);
+            show: false
         });
+        setTimeout(() => {
+            this.setState({
+                show: true
+            });
+        }, 0);
     }
 
     showTip () {
@@ -233,7 +189,8 @@ class Page extends Component {
     }
 
     switchTab (activeTab) {
-        console.log('activeTab', activeTab);
+        console.log('Page -> switchTab -> activeTab', activeTab);
+        this.initRender();
         switch (activeTab) {
             case 0:
                 break;
@@ -267,16 +224,8 @@ class Page extends Component {
         });
     }
 
-    formatDuration (ms: number) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // const minutes: string = formatNumber(parseInt(ms / 60000));
-        // const seconds: string = formatNumber(parseInt((ms / 1000) % 60));
-        // return `${minutes}:${seconds}`;
-    }
-
-
     render () {
-        const { keywords, activeTab = 0 } = this.state;
+        const { keywords, activeTab = 0, show } = this.state;
         console.log('render -> keywords', keywords);
         return (
             <View className={
@@ -287,14 +236,25 @@ class Page extends Component {
             }
             >
                 <CMusic songInfo={this.props.song} onUpdatePlayStatus={this.props.updatePlayStatus.bind(this)} />
-                <AtSearchBar actionName='搜一下' value={keywords} onChange={this.searchTextChange.bind(this)} onActionClick={this.searchResult.bind(this)}
-                  onConfirm={this.searchResult.bind(this)}
+                <AtSearchBar actionName='搜一下' value={keywords} onChange={this.searchTextChange.bind(this)} onActionClick={this.switchTab.bind(this, 0)}
+                  onConfirm={this.switchTab.bind(this, 0)}
                   className='yl-searchResult__input'
                 />
                 <View className='yl-searchResult__content'>
-                    <AtTabs className='yl-searchResult__content__tabs' current={activeTab} scroll tabList={this.tabList} onClick={this.switchTab.bind(this)}>
-                        <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />
-                    </AtTabs>
+                    {/* <AtTabs className='yl-searchResult__content__tabs' current={activeTab} scroll tabList={this.tabList} onClick={this.switchTab.bind(this)}>
+                        {show ?
+                            {
+                                0: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
+                                1: <Song onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
+                                2: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
+                                3: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
+                                4: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
+                                5: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
+                                6: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
+                                7: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
+                                8: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />
+                            }[activeTab] : null}
+                    </AtTabs> */}
                 </View>
             </View>
         );

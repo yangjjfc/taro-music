@@ -8,7 +8,7 @@ import { connect } from '@tarojs/redux';
 import CMusic from '@/components/CMusic';
 import { PageState, InitProps } from './index.d';
 import { getStorageSync, setStorageSync, deepClone } from '@/utils/custom/global';
-import { formatNumber,formatCount } from '@/utils/custom/common';
+import { formatNumber,formatCount,formatTimeStampToTime } from '@/utils/custom/common';
 
 import { updateCanplayList, getSongInfo, updatePlayStatus } from '@/store/actions/song';
 import $http from '@/utils/axios/index';
@@ -100,7 +100,7 @@ class Page extends Component {
             this.setState({
                 loading: false
             });
-            if (!res.result) {
+            if (!res.result||!res.result.album) {
                 this.setState({
                     noData: true
                 });
@@ -256,7 +256,7 @@ class Page extends Component {
                                         </View>
                                         <View>
                                             {
-                                                totalInfo.playListInfo.playLists.map((item, index) => (
+                                                totalInfo.playListInfo.playLists.map((item) => (
                                                     <View className='yl-synthesize__content__playList' key={item.id} onClick={this.goPlayListDetail.bind(this, item)}>
                                                         <View>
                                                             <Image src={item.coverImgUrl} className='yl-synthesize__content__playList__cover' />
@@ -386,7 +386,7 @@ class Page extends Component {
                                                                 </Text>
                                                                 <Text className='yl-synthesize__content__playList__info__desc__nickname'>
                                                                     {
-                                                                        // item.containedSong ? `包含单曲：${item.containedSong}` : formatTimeStampToTime(item.publishTime)
+                                                                        item.containedSong ? `包含单曲：${item.containedSong}` : formatTimeStampToTime(item.publishTime)
                                                                     }
                                                                 </Text>
                                                             </View>
@@ -451,10 +451,10 @@ class Page extends Component {
                                                             <View>
                                                                 {item.nickname}
                                                                 {
-                                                                    item.gender === 1 ? <AtIcon prefixClass='fa' value='mars' size='12' color='#5cb8e7'></AtIcon> : ''
+                                                                    item.gender === 1 ? <AtIcon prefixClass='icon' value='nan' size='16' color='#5cb8e7'></AtIcon> : ''
                                                                 }
                                                                 {
-                                                                    item.gender === 2 ? <AtIcon prefixClass='fa' value='venus' size='12' color='#f88fb8'></AtIcon> : ''
+                                                                    item.gender === 2 ? <AtIcon prefixClass='icon' value='nv' size='16' color='#f88fb8'></AtIcon> : ''
                                                                 }
                                                             </View>
                                                             {

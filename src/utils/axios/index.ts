@@ -18,7 +18,7 @@ const configuration = [
  * @param {*} data  参数
  * @param {*} type  请求类型,默认post
  */
-const Http = async (url: string, data: any = {}, type: Method = 'post') => {
+const Http = async (url: string, data: any = {}, type: Method = 'get') => {
     const headers: Headers = {
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/json'
