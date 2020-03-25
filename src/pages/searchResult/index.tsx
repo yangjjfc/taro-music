@@ -241,20 +241,14 @@ class Page extends Component {
                   className='yl-searchResult__input'
                 />
                 <View className='yl-searchResult__content'>
-                    {/* <AtTabs className='yl-searchResult__content__tabs' current={activeTab} scroll tabList={this.tabList} onClick={this.switchTab.bind(this)}>
-                        {show ?
-                            {
-                                0: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
-                                1: <Song onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
-                                2: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
-                                3: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
-                                4: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
-                                5: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
-                                6: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
-                                7: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />,
-                                8: <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />
-                            }[activeTab] : null}
-                    </AtTabs> */}
+                    <AtTabs className='yl-searchResult__content__tabs' current={activeTab} scroll tabList={this.tabList} onClick={this.switchTab.bind(this)}>
+                        <AtTabsPane current={activeTab} index={0} className='yl-sone'>
+                            <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />
+                        </AtTabsPane>
+                        <AtTabsPane current={activeTab} index={1} className='yl-sone'>
+                            <Song onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />
+                        </AtTabsPane>
+                    </AtTabs>
                 </View>
             </View>
         );
