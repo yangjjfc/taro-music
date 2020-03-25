@@ -86,13 +86,6 @@ interface Page {
 }))
 class Page extends Component {
 
-    /**
-     * 指定config的类型声明为: Taro.Config
-     *
-     * 由于 typescript 对于 object 类型推导只能推出 Key 的基本类型
-     * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
-     * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
-     */
     config: Config = {
         navigationBarTitleText: '搜索'
     }
@@ -130,45 +123,10 @@ class Page extends Component {
 
     constructor (props) {
         super(props);
-        const { keywords } = this.$router.params;
+        const { keywords='1' } = this.$router.params;
         this.state = {
             keywords,
-            activeTab: 0,
-            totalInfo: deepClone(totalInfo),
-            userListInfo: {
-                users: [],
-                more: true
-            },
-            videoInfo: {
-                videos: [],
-                more: true
-            },
-            mvInfo: {
-                mvs: [],
-                more: true
-            },
-            playListInfo: {
-                playLists: [],
-                more: true,
-                moreText: ''
-            },
-            songInfo: {
-                songs: [],
-                more: true
-            },
-            albumInfo: {
-                albums: [],
-                more: true
-            },
-            djRadioInfo: {
-                djRadios: [],
-                more: true
-            },
-            artistInfo: {
-                artists: [],
-                more: true
-            },
-            sim_query: []
+            activeTab: 0
         };
     }
 
@@ -177,78 +135,10 @@ class Page extends Component {
         Taro.setNavigationBarTitle({
             title: `${keywords}的搜索结果`
         });
-        this.getResult();
     }
-
-    componentWillReceiveProps (nextProps) {
-        console.log(this.props, nextProps);
-    }
-
-    componentWillUnmount () { }
-
-    componentDidShow () {
-    }
-
+    componentDidShow () { }
     componentDidHide () { }
-
-    // 搜索结果
-    getResult () {
-        const { keywords = 1, totalInfo } = this.state;
-        Taro.setNavigationBarTitle({
-            title: `${keywords}的搜索结果`
-        });
-        this.setState({
-            totalInfo: Object.assign(totalInfo, {
-                loading: true
-            })
-        });
-        $http('/search', { keywords, type: 1018 }).then((res) => {
-            // 无数据
-            if (!res.result) {
-                this.setState({
-                    totalInfo: Object.assign(this.state.totalInfo, {
-                        loading: false,
-                        noData: true
-                    })
-                });
-                return;
-            }
-            const result = res.result;
-            if (result) {
-                const noData = !result.album && !result.artist && !result.djRadio && !result.playList && !result.song && !result.user && !result.video && !result.sim_query;
-                this.setState({
-                    totalInfo: {
-                        loading: false,
-                        noData,
-                        albumInfo: result.album || {
-                            albums: []
-                        },
-                        artistInfo: result.artist || {
-                            artists: []
-                        },
-                        djRadioInfo: result.djRadio || {
-                            djRadios: []
-                        },
-                        playListInfo: result.playList || {
-                            playLists: []
-                        },
-                        songInfo: result.song || {
-                            songs: []
-                        },
-                        userListInfo: result.user || {
-                            users: []
-                        },
-                        videoInfo: result.video || {
-                            videos: []
-                        },
-                        sim_query: result.sim_query || {
-                            sim_querys: []
-                        }
-                    }
-                });
-            }
-        });
-    }
+    
 
     playSong (songId) {
         $http('/check/music', {
@@ -326,28 +216,12 @@ class Page extends Component {
     }
     // 搜索
     searchResult () {
-        this.setHistoryStorage();
         this.setState({
             totalInfo: Object.assign(this.state.totalInfo, {
                 loading: true
             })
         }, () => {
-            this.resetInfo();
             this.switchTab(0);
-        });
-    }
-    // 清空
-    resetInfo () {
-        this.setState({
-            totalInfo: deepClone(totalInfo)
-        });
-    }
-    queryResultBySim (keyword) {
-        // setKeywordInHistory(keyword)
-        this.setState({
-            keywords: keyword
-        }, () => {
-            this.getResult();
         });
     }
 
@@ -362,7 +236,6 @@ class Page extends Component {
         console.log('activeTab', activeTab);
         switch (activeTab) {
             case 0:
-                this.getResult();
                 break;
             // case 1:
             //   this.getSongList()
@@ -396,18 +269,19 @@ class Page extends Component {
 
     formatDuration (ms: number) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        const minutes: string = formatNumber(parseInt(ms / 60000));
-        const seconds: string = formatNumber(parseInt((ms / 1000) % 60));
-        return `${minutes}:${seconds}`;
+        // const minutes: string = formatNumber(parseInt(ms / 60000));
+        // const seconds: string = formatNumber(parseInt((ms / 1000) % 60));
+        // return `${minutes}:${seconds}`;
     }
 
 
     render () {
-        const { keywords = '1', activeTab = 0, totalInfo } = this.state;
+        const { keywords, activeTab = 0 } = this.state;
+        console.log('render -> keywords', keywords);
         return (
             <View className={
                 classnames({
-                    'searchResult_container': true,
+                    'yl-searchResult': true,
                     hasMusicBox: !!this.props.song.currentSongInfo.name
                 })
             }
@@ -415,13 +289,11 @@ class Page extends Component {
                 <CMusic songInfo={this.props.song} onUpdatePlayStatus={this.props.updatePlayStatus.bind(this)} />
                 <AtSearchBar actionName='搜一下' value={keywords} onChange={this.searchTextChange.bind(this)} onActionClick={this.searchResult.bind(this)}
                   onConfirm={this.searchResult.bind(this)}
-                  className='search__input'
+                  className='yl-searchResult__input'
                 />
-                <View className='search_content'>
-                    <AtTabs current={activeTab} scroll tabList={this.tabList} onClick={this.switchTab.bind(this)}>
-                        {
-                            totalInfo.loading ? <CLoading /> : <Synthesize activeTab={activeTab} keywords={keywords} />
-                        }
+                <View className='yl-searchResult__content'>
+                    <AtTabs className='yl-searchResult__content__tabs' current={activeTab} scroll tabList={this.tabList} onClick={this.switchTab.bind(this)}>
+                        <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />
                     </AtTabs>
                 </View>
             </View>

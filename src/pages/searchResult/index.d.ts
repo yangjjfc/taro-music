@@ -14,7 +14,7 @@ export type PageDispatchProps = {
 export type IProps = PageStateProps & PageDispatchProps
 
 export type PageState = {
-    keywords?: string
+    keywords: string
     activeTab?: number
     totalInfo: {
         loading: boolean

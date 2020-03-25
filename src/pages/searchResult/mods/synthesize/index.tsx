@@ -1,21 +1,20 @@
 import { ComponentClass } from 'react';
-import Taro, { Component, Config } from '@tarojs/taro';
+import Taro, { Component } from '@tarojs/taro';
 import { View, Image, Text, ScrollView } from '@tarojs/components';
-import { AtSearchBar, AtTabs, AtTabsPane, AtIcon } from 'taro-ui';
+import { AtTabsPane, AtIcon } from 'taro-ui';
 import classnames from 'classnames';
 import CLoading from '@/components/CLoading';
 import { connect } from '@tarojs/redux';
 import CMusic from '@/components/CMusic';
 import { PageState, InitProps } from './index.d';
 import { getStorageSync, setStorageSync, deepClone } from '@/utils/custom/global';
+import { formatNumber } from '@/utils/custom/common';
 
 import { updateCanplayList, getSongInfo, updatePlayStatus } from '@/store/actions/song';
 import $http from '@/utils/axios/index';
 import './index.scss';
 
 const totalInfo: PageState['totalInfo'] = {
-    loading: true,
-    noData: false,
     userListInfo: {
         users: [],
         more: false,
@@ -60,16 +59,19 @@ const totalInfo: PageState['totalInfo'] = {
 
 class Page extends Component {
     static defaultProps = {
+        keywords: ''
     }
     constructor (props) {
         super(props);
         this.state = {
+            loading: true,
+            noData: false,
             totalInfo: deepClone(totalInfo)
         };
     }
 
     componentWillMount () {
-
+        this.getResult();
     }
 
     componentWillReceiveProps (nextProps) {
@@ -81,6 +83,61 @@ class Page extends Component {
     }
 
     componentDidHide () { }
+
+
+    getResult () {
+        const { keywords } = this.props;
+        Taro.setNavigationBarTitle({
+            title: `${keywords}的搜索结果`
+        });
+        this.setState({
+            loading: true
+        });
+        $http('/search', {
+            keywords,
+            type: 1018
+        }).then((res) => {
+            this.setState({
+                loading: false
+            });
+            if (!res.result) {
+                this.setState({
+                    noData: true
+                });
+                return;
+            }
+            const result = res.result;
+            this.setState({
+                totalInfo: {
+                    albumInfo: result.album || {
+                        albums: []
+                    },
+                    artistInfo: result.artist || {
+                        artists: []
+                    },
+                    djRadioInfo: result.djRadio || {
+                        djRadios: []
+                    },
+                    playListInfo: result.playList || {
+                        playLists: []
+                    },
+                    songInfo: result.song || {
+                        songs: []
+                    },
+                    userListInfo: result.user || {
+                        users: []
+                    },
+                    videoInfo: result.video || {
+                        videos: []
+                    },
+                    sim_query: result.sim_query || {
+                        sim_querys: []
+                    }
+                }
+            });
+        });
+    }
+
 
     playSong (songId) {
         $http('/check/music', {
@@ -153,20 +210,20 @@ class Page extends Component {
     }
 
     render () {
-        const { activeTab, switchTab } = this.props;
-        const { totalInfo } = this.state;
+        const { activeTab, onSwitchTab } = this.props;
+        const { totalInfo, loading, noData } = this.state;
         return (
-            <AtTabsPane current={activeTab} index={0}>
+            <AtTabsPane current={activeTab} index={0} className='yl-synthesize'>
                 {
-                    totalInfo.loading ? <CLoading /> :
-                        <ScrollView scrollY className='search_content__scroll'>
+                    loading ? <CLoading /> :
+                        <ScrollView scrollY className='yl-synthesize__scroll'>
                             {
-                                totalInfo.noData ? <View className='search_content__nodata'>暂无数据</View> : ''
+                                noData ? <View className='yl-synthesize__nodata'>暂无数据</View> : ''
                             }
                             {
                                 totalInfo.songInfo.songs.length ?
-                                    <View>
-                                        <View className='search_content__title'>
+                                    <View className='yl-synthesize__content'>
+                                        <View className='yl-synthesize__content__title'>
                                             单曲
                                         </View>
                                         {
@@ -185,7 +242,7 @@ class Page extends Component {
                                             ))
                                         }
                                         {
-                                            totalInfo.songInfo.moreText ? <View className='search_content__more' onClick={switchTab.bind(this, 1)}>
+                                            totalInfo.songInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 1)}>
                                                 {totalInfo.songInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                             </View> : ''
                                         }
@@ -224,7 +281,7 @@ class Page extends Component {
                                                 ))
                                             }
                                             {
-                                                totalInfo.playListInfo.moreText ? <View className='search_content__more' onClick={switchTab.bind(this, 2)}>
+                                                totalInfo.playListInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 2)}>
                                                     {totalInfo.playListInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                                 </View> : ''
                                             }
@@ -263,7 +320,7 @@ class Page extends Component {
                                                 ))
                                             }
                                             {
-                                                totalInfo.videoInfo.moreText ? <View className='search_content__more' onClick={switchTab.bind(this, 3)}>
+                                                totalInfo.videoInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 3)}>
                                                     {totalInfo.videoInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                                 </View> : ''
                                             }
@@ -299,7 +356,7 @@ class Page extends Component {
                                                 ))
                                             }
                                             {
-                                                totalInfo.artistInfo.moreText ? <View className='search_content__more' onClick={switchTab.bind(this, 4)}>
+                                                totalInfo.artistInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 4)}>
                                                     {totalInfo.artistInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                                 </View> : ''
                                             }
@@ -338,7 +395,7 @@ class Page extends Component {
                                                 ))
                                             }
                                             {
-                                                totalInfo.albumInfo.moreText ? <View className='search_content__more' onClick={switchTab.bind(this, 5)}>
+                                                totalInfo.albumInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 5)}>
                                                     {totalInfo.albumInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                                 </View> : ''
                                             }
@@ -372,7 +429,7 @@ class Page extends Component {
                                                 ))
                                             }
                                             {
-                                                totalInfo.djRadioInfo.moreText ? <View className='search_content__more' onClick={switchTab.bind(this, 6)}>
+                                                totalInfo.djRadioInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 6)}>
                                                     {totalInfo.djRadioInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                                 </View> : ''
                                             }
@@ -411,7 +468,7 @@ class Page extends Component {
                                                 ))
                                             }
                                             {
-                                                totalInfo.userListInfo.moreText ? <View className='search_content__more' onClick={switchTab.bind(this, 7)}>
+                                                totalInfo.userListInfo.moreText ? <View className='search_content__more' onClick={onSwitchTab.bind(this, 7)}>
                                                     {totalInfo.userListInfo.moreText}<AtIcon value='chevron-right' size='16' color='#ccc'></AtIcon>
                                                 </View> : ''
                                             }

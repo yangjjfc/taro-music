@@ -1,0 +1,11 @@
+@include b(synthesize) {
+    @include e(scroll) {
+        height: calc(100vh - 172px);
+    }
+
+    @include e(nodata) {
+        @include flex;
+        margin-top: 50px;
+        font-size: 22px;
+    }
+}

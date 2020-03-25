@@ -1,13 +1,13 @@
 export type InitProps = {
     activeTab: number
     keywords: string
-    // switchTab: (object) => void
+    onSwitchTab: (object) => void
 }
 
 export type PageState = {
+    loading: boolean
+    noData: boolean
     totalInfo: {
-        loading: boolean
-        noData: boolean
         songInfo: { // 单曲
             songs: Array<{
                 id: number

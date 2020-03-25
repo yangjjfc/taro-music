@@ -2,11 +2,12 @@
  * @Author: yangjj
  * @Date: 2019-06-24 09:08:18
  * @LastEditors: yangjj
- * @LastEditTime: 2020-03-24 17:18:50
+ * @LastEditTime: 2020-03-25 08:45:53
  * @Description: 全局环境配置文件,使用时必须是import,而不能require
  */
 
-export const Environment = {
+ 
+export let Environment = {
     REQUEST_URL: 'http://localhost:3000', // 请求地址
     IMAGE_DOWNLOAD: 'http://dfs.test.cloudyigou.com/dfs/', // 图片下载服务器地址
     IMG_SIZE_MAX: '5242880',

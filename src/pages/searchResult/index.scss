@@ -1,0 +1,7 @@
+@include b(searchResult){
+    height: 100vh;
+
+    @include e(input){
+      height: 85px;  
+    }
+}
