@@ -1,155 +1,173 @@
+/* eslint-disable react/sort-comp */
 import { ComponentClass } from 'react';
-import Taro, { Component } from '@tarojs/taro';
+import Taro, { Component, Config } from '@tarojs/taro';
 import { View, Image, Text, ScrollView } from '@tarojs/components';
-import { AtTabsPane, AtIcon } from 'taro-ui';
+import { AtSearchBar, AtTabs, AtTabsPane, AtIcon } from 'taro-ui';
 import classnames from 'classnames';
 import CLoading from '@/components/CLoading';
 import { connect } from '@tarojs/redux';
 import CMusic from '@/components/CMusic';
-import { PageState, InitProps } from './index.d';
-import { getStorageSync, setStorageSync, deepClone } from '@/utils/custom/global';
-import { formatNumber, formatCount, formatTimeStampToTime } from '@/utils/custom/common';
-
+import CWhiteSpace from '@/components/CWhiteSpace';
+import { injectPlaySong } from '@/utils/custom/decorators';
 import { updateCanplayList, getSongInfo, updatePlayStatus } from '@/store/actions/song';
+import { IProps, PageState } from './index.d';
+// import { setKeywordInHistory, formatCount, formatNumber, formatTimeStampToTime } from '../../utils/common'
 import $http from '@/utils/axios/index';
+import { getStorageSync, setStorageSync, deepClone } from '@/utils/custom/global';
+import Synthesize from './mods/synthesize/index';
+import Song from './mods/song/index';
+import Single from './mods/single/index';
+import Videos from './mods/video/index';
 import './index.scss';
 
 
-class Page extends Component {
-    static defaultProps = {
-        keywords: ''
+interface Page {
+    props: IProps
+    state: PageState
+}
+
+
+@injectPlaySong()
+@connect(({
+    song
+}) => ({
+    song: song
+}), (dispatch) => ({
+    updateCanplayList (object) {
+        dispatch(updateCanplayList(object));
+    },
+    getSongInfo (object) {
+        dispatch(getSongInfo(object));
+    },
+    updatePlayStatus (object) {
+        dispatch(updatePlayStatus(object));
     }
+}))
+class Page extends Component {
+
+    config: Config = {
+        navigationBarTitleText: '搜索'
+    }
+
+
+    private tabList: Array<{ title: string }> = [
+        {
+            title: '综合' // synthesize
+        },
+        {
+            title: '单曲'
+        },
+        {
+            title: '歌单'
+        },
+        {
+            title: '视频'
+        },
+        {
+            title: '歌手'
+        },
+        {
+            title: '专辑'
+        },
+        {
+            title: '主播电台'
+        },
+        {
+            title: '用户'
+        },
+        {
+            title: 'MV'
+        }
+    ]
+
     constructor (props) {
         super(props);
+        const { keywords = 'a' } = this.$router.params;
         this.state = {
-            loading: true,
-            noData: true,
-            artistInfo: {
-                artists: [],
-                more: true,
-                moreText: ''
-            }
+            keywords,
+            show: false,
+            activeTab: 0
         };
     }
 
     componentWillMount () {
-        this.getVideoList();
+        this.switchTab(3);
     }
-
-    componentWillReceiveProps (nextProps) {
-    }
-
-    componentWillUnmount () { }
-
-    componentDidShow () {
-    }
-
+    componentDidShow () { }
     componentDidHide () { }
 
 
-    // 获取视频列表
-    getArtistList () {
-        const { keywords } = this.props;
-        Taro.setNavigationBarTitle({
-            title: `${keywords}的搜索结果`
-        });
-        const { artistInfo } = this.state;
-        if (!artistInfo.more) { return; }
-        $http('/search', {
-            keywords,
-            type: 1014,
-            limit: 30,
-            offset: artistInfo.artists.length
+    playSong (songId) {
+        $http('/check/music', {
+            id: songId
         }).then((res) => {
-            this.setState({
-                loading: false,
-                noData: false
-            });
-            if (!res.result || !res.result.videoCount) {
-                this.setState({
-                    noData: true
+            if (res.success) {
+                Taro.navigateTo({
+                    url: `/pages/songDetail/index?id=${songId}`
                 });
-                return;
-            }
-            if (res.result && res.result.videos) {
-                this.setState({
-                    artistInfo: {
-                        videos: artistInfo.videos.concat(res.result.videos),
-                        more: artistInfo.videos.concat(res.result.videos).length < res.result.videoCount
-                    }
+            } else {
+                Taro.showToast({
+                    title: res.data.message,
+                    icon: 'none'
                 });
             }
         });
     }
-    goVideoDetail () {
+
+    goVideoDetail (id, type) {
+        let apiUrl = '/video/url';
+        if (type === 'mv') {
+            apiUrl = '/mv/url';
+        }
+        $http(apiUrl, {
+            id
+        }).then(({ data }) => {
+            console.log('data', data);
+            if ((type === 'video' && data.urls && data.urls.length) || (type === 'mv' && data.data.url)) {
+                Taro.navigateTo({
+                    url: `/pages/videoDetail/index?id=${id}&type=${type}`
+                });
+            } else {
+                Taro.showToast({
+                    title: `该${type === 'mv' ? 'mv' : '视频'}暂无版权播放`,
+                    icon: 'none'
+                });
+            }
+        });
 
     }
-    showMore () { }
-    formatDuration (ms: number) {
-        // @ts-ignore
-        const minutes: string = formatNumber(parseInt(ms / 60000));
-        // @ts-ignore
-        const seconds: string = formatNumber(parseInt((ms / 1000) % 60));
-        return `${minutes}:${seconds}`;
+
+    goPlayListDetail (item) {
+        Taro.navigateTo({
+            url: `/pages/playListDetail/index?id=${item.id}&name=${item.name}`
+        });
     }
 
-    render () {
-        const { activeTab } = this.props;
-        console.log('Page -> render -> activeTab', activeTab);
-        // eslint-disable-next-line no-shadow
-        const { albumInfo, noData, loading } = this.state;
-        return (
-            <View className='yl-singer'>
-                {
-                    loading ? <CLoading /> :
-                        <ScrollView scrollY onScrollToLower={this.getArtistList.bind(this)} className='yl-singer__scroll'>
-                            {
-                                noData ? <View className='yl-singer__nodata'>暂无数据</View> : ''
-                            }
-                             {
-                  albumInfo.albums.map((item) => (
-                    <View className='search_content__playList__item' key={item.id} onClick={this.showTip.bind(this)}>
-                      <View>
-                        <Image src={item.picUrl} className='search_content__playList__item__cover'/>
-                      </View>
-                      <View className='search_content__playList__item__info'>
-                        <View className='search_content__playList__item__info__title'>
-                          {item.name}
-                        </View>
-                        <View className='search_content__playList__item__info__desc'>
-                          <Text>
-                            {item.artist.name}
-                          </Text>
-                          <Text className='search_content__playList__item__info__desc__nickname'>
-                           { item.containedSong ? `包含单曲：${item.containedSong}` : formatTimeStampToTime(item.publishTime) }
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-                  ))
-                }
-                { albumInfo.more ? <CLoading /> : ''}
-                        </ScrollView>
-                }
-            </View>
-        );
+    showMore () {
+        Taro.showToast({
+            title: '暂未实现，敬请期待',
+            icon: 'none'
+        });
     }
-}
 
-// #region 导出注意
-//
-// 经过上面的声明后需要将导出的 Taro.Component 子类修改为子类本身的 props 属性
-// 这样在使用这个子类时 Ts 才不会提示缺少 JSX 类型参数错误
-//
-// #endregion
+    searchTextChange (val) {
+        this.setState({
+            keywords: val
+        });
+    }
 
-interface Page {
-    props: InitProps
-    state: PageState
-}
 
-export default Page as ComponentClass<InitProps, PageState>;
-new Set(historyList)];
+    // 设置存储
+    setHistoryStorage () {
+        const keywords = this.state.keywords;
+        if (keywords) {
+            let historyList = getStorageSync('historyList') || [];
+            if (historyList.length >= 5) {
+                historyList.splice(0, 1, keywords);
+            } else {
+                historyList.unshift(keywords);
+            }
+            historyList = [...new Set(historyList)];
             setStorageSync('historyList', historyList);
         }
     }

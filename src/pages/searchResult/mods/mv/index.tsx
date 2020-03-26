@@ -97,7 +97,7 @@ class Page extends Component {
         const { activeTab } = this.props;
         console.log('Page -> render -> activeTab', activeTab);
         // eslint-disable-next-line no-shadow
-        const { albumInfo, noData, loading } = this.state;
+        const { artistInfo, noData, loading } = this.state;
         return (
             <View className='yl-singer'>
                 {
@@ -106,29 +106,15 @@ class Page extends Component {
                             {
                                 noData ? <View className='yl-singer__nodata'>暂无数据</View> : ''
                             }
-                             {
-                  albumInfo.albums.map((item) => (
-                    <View className='search_content__playList__item' key={item.id} onClick={this.showTip.bind(this)}>
-                      <View>
-                        <Image src={item.picUrl} className='search_content__playList__item__cover'/>
-                      </View>
-                      <View className='search_content__playList__item__info'>
-                        <View className='search_content__playList__item__info__title'>
-                          {item.name}
-                        </View>
-                        <View className='search_content__playList__item__info__desc'>
-                          <Text>
-                            {item.artist.name}
-                          </Text>
-                          <Text className='search_content__playList__item__info__desc__nickname'>
-                           { item.containedSong ? `包含单曲：${item.containedSong}` : formatTimeStampToTime(item.publishTime) }
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-                  ))
-                }
-                { albumInfo.more ? <CLoading /> : ''}
+                            {
+                                artistInfo.artists.map((item) => (
+                                    <View className='yl-singer__search_content__artist' key={item.id} >
+                                        <Image src={item.picUrl} className='yl-singer__content__artist__cover' />
+                                        <Text>{item.name}{item.alias[0] ? `（${item.alias[0]}）` : ''}</Text>
+                                    </View>
+                                ))
+                            }
+                            {artistInfo.more ? <CLoading /> : ''}
                         </ScrollView>
                 }
             </View>
