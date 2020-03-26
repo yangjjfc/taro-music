@@ -1,4 +1,4 @@
-@include b(singer) {
+@include b(album) {
 
     @include e(scroll) {
         height: calc(100vh - 172px);
@@ -19,31 +19,36 @@
             padding: 20px 0;
         }
 
-        // 歌手
-        &__artist {
+        // 歌单
+        &__playList {
             @include flex(flex-start);
-            font-size: 26px;
-            overflow: hidden;
-            text-overflow: ellipsis;
             margin-bottom: 15px;
 
             &__cover {
-                width: 100rpx;
-                height: 100rpx;
-                border-radius: 50%;
-                margin-right: 20rpx;
-                background-color: #f8f8f8;
-
+                width: 150px;
+                height: 150px;
+                border-radius: 10px;
+                margin-right: 20px;
+                display: block;
             }
 
-            &__desc {
-                font-size: 20rpx;
-                color: #888888;
-                margin-top: 10px;
-                overflow: hidden;
-                text-overflow: ellipsis;
+            &__info {
+                &__title {
+                    font-size: 26px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                &__desc {
+                    font-size: 20rpx;
+                    color: #888888;
+                    margin-top: 10px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
             }
         }
+
 
         &__more {
             @include flex;

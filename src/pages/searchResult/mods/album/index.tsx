@@ -19,73 +19,63 @@ class Page extends Component {
     static defaultProps = {
         keywords: ''
     }
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             loading: true,
             noData: true,
-            artistInfo: {
-                artists: [],
+            albumInfo: {
+                albums: [],
                 more: true,
-                moreText: ''
             }
         };
     }
 
-    componentWillMount () {
-        this.getVideoList();
+    componentWillMount() {
+        this.getAlbumList();
     }
 
-    componentWillReceiveProps (nextProps) {
+    componentWillReceiveProps(nextProps) {
     }
 
-    componentWillUnmount () { }
+    componentWillUnmount() { }
 
-    componentDidShow () {
+    componentDidShow() {
     }
 
-    componentDidHide () { }
+    componentDidHide() { }
 
 
-    // 获取视频列表
-    getArtistList () {
+    // 获取专辑列表
+    getAlbumList() {
         const { keywords } = this.props;
         Taro.setNavigationBarTitle({
             title: `${keywords}的搜索结果`
         });
-        const { artistInfo } = this.state;
-        if (!artistInfo.more) { return; }
+        const { albumInfo } = this.state;
+        if (!albumInfo.more) { return; }
         $http('/search', {
             keywords,
-            type: 1014,
+            type: 10,
             limit: 30,
-            offset: artistInfo.artists.length
+            offset: albumInfo.albums.length
         }).then((res) => {
-            this.setState({
-                loading: false,
-                noData: false
-            });
-            if (!res.result || !res.result.videoCount) {
+            if (res.result && res.result.albums) {
                 this.setState({
-                    noData: true
-                });
-                return;
-            }
-            if (res.result && res.result.videos) {
-                this.setState({
-                    artistInfo: {
-                        videos: artistInfo.videos.concat(res.result.videos),
-                        more: artistInfo.videos.concat(res.result.videos).length < res.result.videoCount
+                    albumInfo: {
+                        albums: albumInfo.albums.concat(res.result.albums),
+                        more: albumInfo.albums.concat(res.result.albums).length < res.result.albumCount
                     }
-                });
+                })
             }
-        });
+        })
     }
-    goVideoDetail () {
+
+    goVideoDetail() {
 
     }
-    showMore () { }
-    formatDuration (ms: number) {
+    showMore() { }
+    formatDuration(ms: number) {
         // @ts-ignore
         const minutes: string = formatNumber(parseInt(ms / 60000));
         // @ts-ignore
@@ -93,42 +83,42 @@ class Page extends Component {
         return `${minutes}:${seconds}`;
     }
 
-    render () {
+    render() {
         const { activeTab } = this.props;
         console.log('Page -> render -> activeTab', activeTab);
         // eslint-disable-next-line no-shadow
         const { albumInfo, noData, loading } = this.state;
         return (
-            <View className='yl-singer'>
+            <View className='yl-album'>
                 {
                     loading ? <CLoading /> :
-                        <ScrollView scrollY onScrollToLower={this.getArtistList.bind(this)} className='yl-singer__scroll'>
+                        <ScrollView scrollY onScrollToLower={this.getAlbumList.bind(this)} className='yl-album__scroll'>
                             {
-                                noData ? <View className='yl-singer__nodata'>暂无数据</View> : ''
+                                noData ? <View className='yl-album__nodata'>暂无数据</View> : ''
                             }
-                             {
-                  albumInfo.albums.map((item) => (
-                    <View className='search_content__playList__item' key={item.id} onClick={this.showTip.bind(this)}>
-                      <View>
-                        <Image src={item.picUrl} className='search_content__playList__item__cover'/>
-                      </View>
-                      <View className='search_content__playList__item__info'>
-                        <View className='search_content__playList__item__info__title'>
-                          {item.name}
-                        </View>
-                        <View className='search_content__playList__item__info__desc'>
-                          <Text>
-                            {item.artist.name}
-                          </Text>
-                          <Text className='search_content__playList__item__info__desc__nickname'>
-                           { item.containedSong ? `包含单曲：${item.containedSong}` : formatTimeStampToTime(item.publishTime) }
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-                  ))
-                }
-                { albumInfo.more ? <CLoading /> : ''}
+                            {
+                                albumInfo.albums.map((item) => (
+                                    <View className='yl-album__content__playList' key={item.id} >
+                                        <View>
+                                            <Image src={item.picUrl} className='yl-album__content__playList__cover' />
+                                        </View>
+                                        <View className='yl-album__content__playList__info'>
+                                            <View className='yl-album__content__playList__info__title'>
+                                                {item.name}
+                                            </View>
+                                            <View className='yl-album__content__playList__info__desc'>
+                                                <Text>
+                                                    {item.artist.name}
+                                                </Text>
+                                                <Text className='yl-album__content__playList__info__desc__nickname'>
+                                                    {item.containedSong ? `包含单曲：${item.containedSong}` : formatTimeStampToTime(item.publishTime)}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                ))
+                            }
+                            {albumInfo.more ? <CLoading /> : ''}
                         </ScrollView>
                 }
             </View>
@@ -150,99 +140,99 @@ interface Page {
 
 export default Page as ComponentClass<InitProps, PageState>;
 new Set(historyList)];
-            setStorageSync('historyList', historyList);
+setStorageSync('historyList', historyList);
         }
     }
-    // 初始化组件
-    initRender () {
+// 初始化组件
+initRender() {
+    this.setState({
+        show: false
+    });
+    setTimeout(() => {
         this.setState({
-            show: false
+            show: true
         });
-        setTimeout(() => {
-            this.setState({
-                show: true
-            });
-        }, 0);
-    }
+    }, 0);
+}
 
-    showTip () {
-        Taro.showToast({
-            title: '正在开发，敬请期待',
-            icon: 'none'
-        });
-    }
+showTip() {
+    Taro.showToast({
+        title: '正在开发，敬请期待',
+        icon: 'none'
+    });
+}
 
-    switchTab (activeTab) {
-        console.log('Page -> switchTab -> activeTab', activeTab);
-        this.initRender();
-        switch (activeTab) {
-            case 0:
-                break;
-            // case 1:
-            //   this.getSongList()
-            //   break
-            // case 2:
-            //   this.getPlayList()
-            //   break
-            // case 3:
-            //   this.getVideoList()
-            //   break  
-            // case 4:
-            //   this.getArtistList()
-            //   break  
-            // case 5:
-            //   this.getAlbumList()
-            //   break    
-            // case 6:
-            //   this.getDjRadioList()
-            //   break 
-            // case 7:
-            //   this.getUserList()
-            //   break  
-            // case 8:
-            //   this.getMvList()
-            //   break 
+switchTab(activeTab) {
+    console.log('Page -> switchTab -> activeTab', activeTab);
+    this.initRender();
+    switch (activeTab) {
+        case 0:
+            break;
+        // case 1:
+        //   this.getSongList()
+        //   break
+        // case 2:
+        //   this.getPlayList()
+        //   break
+        // case 3:
+        //   this.getVideoList()
+        //   break  
+        // case 4:
+        //   this.getArtistList()
+        //   break  
+        // case 5:
+        //   this.getAlbumList()
+        //   break    
+        // case 6:
+        //   this.getDjRadioList()
+        //   break 
+        // case 7:
+        //   this.getUserList()
+        //   break  
+        // case 8:
+        //   this.getMvList()
+        //   break 
+    }
+    this.setState({
+        activeTab
+    });
+}
+
+render() {
+    const { keywords, activeTab = 0, show } = this.state;
+    console.log('render -> keywords', keywords);
+    return (
+        <View className={
+            classnames({
+                'yl-searchResult': true,
+                hasMusicBox: !!this.props.song.currentSongInfo.name
+            })
         }
-        this.setState({
-            activeTab
-        });
-    }
-
-    render () {
-        const { keywords, activeTab = 0, show } = this.state;
-        console.log('render -> keywords', keywords);
-        return (
-            <View className={
-                classnames({
-                    'yl-searchResult': true,
-                    hasMusicBox: !!this.props.song.currentSongInfo.name
-                })
-            }
-            >
-                <CMusic songInfo={this.props.song} onUpdatePlayStatus={this.props.updatePlayStatus.bind(this)} />
-                <AtSearchBar actionName='搜一下' value={keywords} onChange={this.searchTextChange.bind(this)} onActionClick={this.switchTab.bind(this, 0)}
-                  onConfirm={this.switchTab.bind(this, 0)}
-                  className='yl-searchResult__input'
-                />
-                <View className='yl-searchResult__content'>
-                    <AtTabs className='yl-searchResult__content__tabs' current={activeTab} scroll tabList={this.tabList} onClick={this.switchTab.bind(this)}>
-                        <AtTabsPane current={activeTab} index={0} className='yl-sone'>
-                            {show && activeTab === 0 ? <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} /> : null}
-                        </AtTabsPane>
-                        <AtTabsPane current={activeTab} index={1} className='yl-sone'>
-                            {show && activeTab === 1 ? <Single onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} /> : null}
-                        </AtTabsPane>
-                        <AtTabsPane current={activeTab} index={2} className='yl-sone'>
-                            {show && activeTab === 2 ? <Song onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} /> : null}
-                        </AtTabsPane>
-                        <AtTabsPane current={activeTab} index={3} className='yl-sone'>
-                            {show && activeTab === 3 ? <Videos onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} /> : null}
-                        </AtTabsPane>
-                    </AtTabs>
-                </View>
+        >
+            <CMusic songInfo={this.props.song} onUpdatePlayStatus={this.props.updatePlayStatus.bind(this)} />
+            <AtSearchBar actionName='搜一下' value={keywords} onChange={this.searchTextChange.bind(this)} onActionClick={this.switchTab.bind(this, 0)}
+                onConfirm={this.switchTab.bind(this, 0)}
+                className='yl-searchResult__input'
+            />
+            <View className='yl-searchResult__content'>
+                <AtTabs className='yl-searchResult__content__tabs' current={activeTab} scroll tabList={this.tabList} onClick={this.switchTab.bind(this)}>
+                    <AtTabsPane current={activeTab} index={0} className='yl-sone'>
+                        {show && activeTab === 0 ? <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} /> : null}
+                    </AtTabsPane>
+                    <AtTabsPane current={activeTab} index={1} className='yl-sone'>
+                        {show && activeTab === 1 ? <Single onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} /> : null}
+                    </AtTabsPane>
+                    <AtTabsPane current={activeTab} index={2} className='yl-sone'>
+                        {show && activeTab === 2 ? <Song onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} /> : null}
+                    </AtTabsPane>
+                    <AtTabsPane current={activeTab} index={3} className='yl-sone'>
+                        {show && activeTab === 3 ? <Videos onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} /> : null}
+                    </AtTabsPane>
+                </AtTabs>
             </View>
-        );
-    }
+        </View>
+    );
+}
 }
 
 // #region 导出注意

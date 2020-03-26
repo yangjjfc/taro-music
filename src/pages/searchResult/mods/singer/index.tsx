@@ -65,7 +65,7 @@ class Page extends Component {
                 loading: false,
                 noData: false
             });
-            if (!res.result || !res.result.videoCount) {
+            if (!res.result || !res.result.artistsCount) {
                 this.setState({
                     noData: true
                 });
@@ -74,8 +74,8 @@ class Page extends Component {
             if (res.result && res.result.videos) {
                 this.setState({
                     artistInfo: {
-                        videos: artistInfo.videos.concat(res.result.videos),
-                        more: artistInfo.videos.concat(res.result.videos).length < res.result.videoCount
+                        videos: artistInfo.artists.concat(res.result.videos),
+                        more: artistInfo.artists.concat(res.result.videos).length < res.result.videoCount
                     }
                 });
             }

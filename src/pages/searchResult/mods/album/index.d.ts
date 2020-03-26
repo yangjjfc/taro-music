@@ -7,14 +7,17 @@ export type InitProps = {
 export type PageState = {
     loading: boolean
     noData: boolean
-    artistInfo: { // 歌手
-      artists: Array<{
+    albumInfo: { // 专辑
+      albums: Array<{
         name: string
         id: number
+        publishTime: number
         picUrl: string
-        alias: Array<string>
+        artist: {
+          name: string
+        }
+        containedSong: string
       }>
       more: boolean
-      moreText: string
     }
 }
