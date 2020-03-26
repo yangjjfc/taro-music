@@ -7,18 +7,18 @@ export type InitProps = {
 export type PageState = {
     loading: boolean
     noData: boolean
-    songInfo: { // 单曲
-        songs: Array<{
-            id: number
-            name: string
-            al: {
-                id: number
-                name: string
-            }
-            ar: Array<{
-                name: string
-            }>
+    playListInfo: { // 歌单
+        playLists: Array<{
+          name: string
+          id: number
+          coverImgUrl: string
+          trackCount: number
+          playCount: number
+          creator: {
+            nickname: string
+          }
         }>
         more: boolean
-    }
+        moreText?: string
+      }
 }

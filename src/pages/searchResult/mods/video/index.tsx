@@ -24,8 +24,8 @@ class Page extends Component {
         this.state = {
             loading: true,
             noData: true,
-            playListInfo: {
-                playLists: [],
+            videoInfo: {
+                videos: [],
                 more: true,
                 moreText: ''
             }
@@ -33,7 +33,7 @@ class Page extends Component {
     }
 
     componentWillMount () {
-        this.getPlayList();
+        this.getVideoList();
     }
 
     componentWillReceiveProps (nextProps) {
@@ -47,41 +47,41 @@ class Page extends Component {
     componentDidHide () { }
 
 
-    // 获取歌单列表
-    getPlayList () {
+    // 获取视频列表
+    getVideoList () {
         const { keywords } = this.props;
         Taro.setNavigationBarTitle({
             title: `${keywords}的搜索结果`
         });
-        const { playListInfo } = this.state;
-        if (!playListInfo.more) { return; }
+        const { videoInfo } = this.state;
+        if (!videoInfo.more) { return; }
         $http('/search', {
             keywords,
-            type: 1000,
+            type: 1014,
             limit: 30,
-            offset: playListInfo.playLists.length
+            offset: videoInfo.videos.length
         }).then((res) => {
             this.setState({
                 loading: false,
                 noData: false
             });
-            if (!res.result || !res.result.playlists) {
+            if (!res.result || !res.result.videoCount) {
                 this.setState({
                     noData: true
                 });
                 return;
             }
-            if (res.result && res.result.playlists) {
+            if (res.result && res.result.videos) {
                 this.setState({
-                    playListInfo: {
-                        playLists: playListInfo.playLists.concat(res.result.playlists),
-                        more: playListInfo.playLists.concat(res.result.playlists).length < res.result.playlistCount
+                    videoInfo: {
+                        videos: videoInfo.videos.concat(res.result.videos),
+                        more: videoInfo.videos.concat(res.result.videos).length < res.result.videoCount
                     }
                 });
             }
         });
     }
-    goPlayListDetail () {
+    goVideoDetail () {
 
     }
     showMore () { }
@@ -97,41 +97,40 @@ class Page extends Component {
         const { activeTab } = this.props;
         console.log('Page -> render -> activeTab', activeTab);
         // eslint-disable-next-line no-shadow
-        const { playListInfo, noData, loading } = this.state;
+        const { videoInfo, noData, loading } = this.state;
         return (
-            <View className='yl-sone'>
+            <View className='yl-video'>
                 {
                     loading ? <CLoading /> :
-                        <ScrollView scrollY onScrollToLower={this.getPlayList.bind(this)} className='yl-sone__scroll'>
+                        <ScrollView scrollY onScrollToLower={this.getVideoList.bind(this)} className='yl-video__scroll'>
                             {
-                                noData ? <View className='yl-sone__nodata'>暂无数据</View> : ''
+                                noData ? <View className='yl-video__nodata'>暂无数据</View> : ''
                             }
                             {
-                                playListInfo.playLists.map((item) => (
-                                    <View className='yl-sone__content__playList' key={item.id} onClick={this.goPlayListDetail.bind(this, item)}>
-                                        <View>
-                                            <Image src={item.coverImgUrl} className='yl-sone__content__playList__cover' />
-                                        </View>
-                                        <View className='yl-sone__content__playList__info'>
-                                            <View className='yl-sone__content__playList__info__title'>
-                                                {item.name}
+                                videoInfo.videos.map((item, index) => (
+                                    <View className='yl-video__content__video' key={item.vid} onClick={this.goVideoDetail.bind(this, item.vid, 'video')}>
+                                        <View className='yl-video__content__video__cover--wrap'>
+                                            <View className='yl-video__content__video__cover--playtime'>
+                                                <Text className='at-icon at-icon-play'></Text>
+                                                <Text>{formatCount(item.playTime)}</Text>
                                             </View>
-                                            <View className='yl-sone__content__playList__info__desc'>
-                                                <Text>
-                                                    {item.trackCount}首音乐
-                                                </Text>
-                                                <Text className='yl-sone__content__playList__info__desc__nickname'>
-                                                    by {item.creator.nickname}
-                                                </Text>
-                                                <Text>
-                                                    {formatCount(item.playCount)}次
+                                            <Image src={item.coverUrl} className='yl-video__content__video__cover' />
+                                        </View>
+                                        <View className='yl-video__content__video__info'>
+                                            <View className='yl-video__content__video__info__title'>
+                                                {item.title}
+                                            </View>
+                                            <View className='yl-video__content__video__info__desc'>
+                                                <Text>{this.formatDuration(item.durationms)},</Text>
+                                                <Text className='yl-video__content__video__info__desc__nickname'>
+                                                    by {item.creator[0].userName}
                                                 </Text>
                                             </View>
                                         </View>
                                     </View>
                                 ))
                             }
-                            {playListInfo.more ? <CLoading /> : ''}
+                            {videoInfo.more ? <CLoading /> : ''}
                         </ScrollView>
                 }
             </View>

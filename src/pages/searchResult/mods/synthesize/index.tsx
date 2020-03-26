@@ -71,6 +71,7 @@ class Page extends Component {
     }
 
     componentWillMount () {
+     
         this.getResult();
     }
 
@@ -98,7 +99,8 @@ class Page extends Component {
             type: 1018
         }).then((res) => {
             this.setState({
-                loading: false
+                loading: false,
+                noData: false
             });
             if (!res.result||!res.result.album) {
                 this.setState({
@@ -213,7 +215,7 @@ class Page extends Component {
         const { activeTab, onSwitchTab } = this.props;
         const { totalInfo, loading, noData } = this.state;
         return (
-            <AtTabsPane current={activeTab} index={0} className='yl-synthesize'>
+            <View  className='yl-synthesize'>
                 {
                     loading ? <CLoading /> :
                         <ScrollView scrollY className='yl-synthesize__scroll'>
@@ -477,7 +479,7 @@ class Page extends Component {
                             }
                         </ScrollView>
                 }
-            </AtTabsPane>
+            </View>
         );
     }
 }

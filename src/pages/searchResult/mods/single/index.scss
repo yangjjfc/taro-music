@@ -1,4 +1,5 @@
-@include b(sone) {
+
+@include b(single) {
 
     @include e(scroll) {
         height: calc(100vh - 172px);
@@ -18,34 +19,37 @@
             font-weight: 700;
             padding: 20px 0;
         }
-
-        // 歌单
-        &__playList {
+        // 单曲
+        &__music {
             @include flex(flex-start);
-            margin-bottom: 15px;
-
-            &__cover {
-                width: 150px;
-                height: 150px;
-                border-radius: 10px;
-                margin-right: 20px;
-                display: block;
-            }
+            padding: 15rpx 0;
+            width: 100%;
+            box-sizing: border-box;
+            border-bottom: 1rpx solid #eeeeee;
 
             &__info {
-                &__title {
-                    font-size: 26px;
+                flex: 1;
+
+                &__name {
+                    font-size: 34px;
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
 
                 &__desc {
-                    font-size: 20rpx;
+                    font-size: 24rpx;
                     color: #888888;
                     margin-top: 10px;
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
+            }
+
+            &__icon {
+                flex: none;
+                font-size: 30rpx;
+                color: #dddddd;
+                padding: 40rpx 0 40rpx 80rpx;
             }
         }
 

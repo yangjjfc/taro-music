@@ -24,16 +24,15 @@ class Page extends Component {
         this.state = {
             loading: true,
             noData: true,
-            playListInfo: {
-                playLists: [],
-                more: true,
-                moreText: ''
+            songInfo: {
+                songs: [],
+                more: true
             }
         };
     }
 
     componentWillMount () {
-        this.getPlayList();
+        this.getSongList();
     }
 
     componentWillReceiveProps (nextProps) {
@@ -47,41 +46,45 @@ class Page extends Component {
     componentDidHide () { }
 
 
-    // 获取歌单列表
-    getPlayList () {
+    getSongList () {
         const { keywords } = this.props;
         Taro.setNavigationBarTitle({
             title: `${keywords}的搜索结果`
         });
-        const { playListInfo } = this.state;
-        if (!playListInfo.more) { return; }
+        const { songInfo } = this.state;
+        if (!songInfo.more) { return; }
         $http('/search', {
             keywords,
-            type: 1000,
+            type: 1,
             limit: 30,
-            offset: playListInfo.playLists.length
+            offset: songInfo.songs.length
         }).then((res) => {
             this.setState({
                 loading: false,
                 noData: false
             });
-            if (!res.result || !res.result.playlists) {
+            if (!res.result || !res.result.songCount) {
                 this.setState({
                     noData: true
                 });
                 return;
             }
-            if (res.result && res.result.playlists) {
+            if (res.result && res.result.songs) {
+                const tempSongList = res.result.songs.map((item) => {
+                    item.al = item.album;
+                    item.ar = item.artists;
+                    return item;
+                });
                 this.setState({
-                    playListInfo: {
-                        playLists: playListInfo.playLists.concat(res.result.playlists),
-                        more: playListInfo.playLists.concat(res.result.playlists).length < res.result.playlistCount
+                    songInfo: {
+                        songs: songInfo.songs.concat(tempSongList),
+                        more: songInfo.songs.concat(res.result.songs).length < res.result.songCount
                     }
                 });
             }
         });
     }
-    goPlayListDetail () {
+    playSong () {
 
     }
     showMore () { }
@@ -97,41 +100,31 @@ class Page extends Component {
         const { activeTab } = this.props;
         console.log('Page -> render -> activeTab', activeTab);
         // eslint-disable-next-line no-shadow
-        const { playListInfo, noData, loading } = this.state;
+        const { songInfo, noData, loading } = this.state;
         return (
-            <View className='yl-sone'>
+            <View className='yl-single'>
                 {
                     loading ? <CLoading /> :
-                        <ScrollView scrollY onScrollToLower={this.getPlayList.bind(this)} className='yl-sone__scroll'>
+                        <ScrollView scrollY onScrollToLower={this.getSongList.bind(this)} className='yl-single__scroll'>
                             {
-                                noData ? <View className='yl-sone__nodata'>暂无数据</View> : ''
+                                noData ? <View className='yl-single__nodata'>暂无数据</View> : ''
                             }
                             {
-                                playListInfo.playLists.map((item) => (
-                                    <View className='yl-sone__content__playList' key={item.id} onClick={this.goPlayListDetail.bind(this, item)}>
-                                        <View>
-                                            <Image src={item.coverImgUrl} className='yl-sone__content__playList__cover' />
-                                        </View>
-                                        <View className='yl-sone__content__playList__info'>
-                                            <View className='yl-sone__content__playList__info__title'>
+                                songInfo.songs.map((item) => (
+                                    <View key={item.id} className='yl-single__content__music'>
+                                        <View className='yl-single__content__music__info' onClick={this.playSong.bind(this, item.id)}>
+                                            <View className='yl-single__content__music__info__name'>
                                                 {item.name}
                                             </View>
-                                            <View className='yl-sone__content__playList__info__desc'>
-                                                <Text>
-                                                    {item.trackCount}首音乐
-                                                </Text>
-                                                <Text className='yl-sone__content__playList__info__desc__nickname'>
-                                                    by {item.creator.nickname}
-                                                </Text>
-                                                <Text>
-                                                    {formatCount(item.playCount)}次
-                                                </Text>
+                                            <View className='yl-single__content__music__info__desc'>
+                                                {`${item.ar[0] ? item.ar[0].name : ''} - ${item.al.name}`}
                                             </View>
                                         </View>
+                                        <View className='fa fa-ellipsis-v yl-single__content__music__icon' onClick={this.showMore.bind(this)}></View>
                                     </View>
                                 ))
                             }
-                            {playListInfo.more ? <CLoading /> : ''}
+                            {songInfo.more ? <CLoading /> : ''}
                         </ScrollView>
                 }
             </View>

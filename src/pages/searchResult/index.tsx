@@ -16,6 +16,8 @@ import $http from '@/utils/axios/index';
 import { getStorageSync, setStorageSync, deepClone } from '@/utils/custom/global';
 import Synthesize from './mods/synthesize/index';
 import Song from './mods/song/index';
+import Single from './mods/single/index';
+import Videos from './mods/video/index';
 import './index.scss';
 
 
@@ -89,7 +91,7 @@ class Page extends Component {
     }
 
     componentWillMount () {
-        this.switchTab(1);
+        this.switchTab(3);
     }
     componentDidShow () { }
     componentDidHide () { }
@@ -243,10 +245,16 @@ class Page extends Component {
                 <View className='yl-searchResult__content'>
                     <AtTabs className='yl-searchResult__content__tabs' current={activeTab} scroll tabList={this.tabList} onClick={this.switchTab.bind(this)}>
                         <AtTabsPane current={activeTab} index={0} className='yl-sone'>
-                            <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />
+                            {show && activeTab === 0 ? <Synthesize onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} /> : null}
                         </AtTabsPane>
                         <AtTabsPane current={activeTab} index={1} className='yl-sone'>
-                            <Song onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} />
+                            {show && activeTab === 1 ? <Single onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} /> : null}
+                        </AtTabsPane>
+                        <AtTabsPane current={activeTab} index={2} className='yl-sone'>
+                            {show && activeTab === 2 ? <Song onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} /> : null}
+                        </AtTabsPane>
+                        <AtTabsPane current={activeTab} index={3} className='yl-sone'>
+                            {show && activeTab === 3 ? <Videos onSwitchTab={this.switchTab} activeTab={activeTab} keywords={keywords} /> : null}
                         </AtTabsPane>
                     </AtTabs>
                 </View>
